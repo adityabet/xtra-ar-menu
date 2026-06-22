@@ -74,6 +74,7 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
   const [arActive, setArActive]         = useState(false);
   const [showNoArModal, setShowNoArModal] = useState(false);
   const [ingOpen, setIngOpen]           = useState(true);
+  const [scaleVal, setScaleVal]         = useState(0.3);
 
   useEffect(() => {
     const el = viewerRef.current;
@@ -96,6 +97,17 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
       el.removeEventListener('error', onError);
     };
   }, [src]);
+
+  const scaleStep = (dir) => {
+    const el = viewerRef.current;
+    if (!el) return;
+    const cur = parseFloat((el.getAttribute('scale') || '0.3 0.3 0.3').split(' ')[0]);
+    const next = dir === 'in'
+      ? Math.min(+(cur * 1.3).toFixed(3), 1.5)
+      : Math.max(+(cur * 0.77).toFixed(3), 0.05);
+    el.setAttribute('scale', `${next} ${next} ${next}`);
+    setScaleVal(next);
+  };
 
   const handleArTap = async () => {
     const el = viewerRef.current;
@@ -168,37 +180,10 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
             exposure="1.1"
             environment-image="neutral"
             style={{ width: '100%', height: '100%', background: '#000' }}
-          />
-
-          {/* Pinch-to-zoom overlay in AR mode */}
-          {arActive && (
-            <div
-              className="absolute inset-0 z-10"
-              style={{ touchAction: 'none' }}
-              onTouchStart={(e) => {
-                if (e.touches.length === 2) {
-                  const dx = e.touches[0].clientX - e.touches[1].clientX;
-                  const dy = e.touches[0].clientY - e.touches[1].clientY;
-                  viewerRef.current._pinchDist = Math.sqrt(dx*dx + dy*dy);
-                  viewerRef.current._pinchScale = parseFloat(viewerRef.current.getAttribute('scale') || '0.3');
-                }
-              }}
-              onTouchMove={(e) => {
-                if (e.touches.length !== 2 || !viewerRef.current?._pinchDist) return;
-                const dx = e.touches[0].clientX - e.touches[1].clientX;
-                const dy = e.touches[0].clientY - e.touches[1].clientY;
-                const dist = Math.sqrt(dx*dx + dy*dy);
-                const ratio = dist / viewerRef.current._pinchDist;
-                const base = viewerRef.current._pinchScale;
-                const next = Math.max(0.08, Math.min(base * ratio, 1.2));
-                const s = `${next} ${next} ${next}`;
-                viewerRef.current.setAttribute('scale', s);
-                viewerRef.current._pinchDist = dist;
-                viewerRef.current._pinchScale = next;
-              }}
-              onTouchEnd={() => { if (viewerRef.current) viewerRef.current._pinchDist = null; }}
-            />
-          )}
+          >
+            {/* dom-overlay slot — buttons visible over AR camera feed */}
+            <div slot="poster" />
+          </model-viewer>
           {/* eslint-enable react/no-unknown-property */}
         </div>
 
@@ -234,19 +219,38 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
           </div>
         )}
 
-        {/* AR Button */}
+        {/* Size adjust + AR Button */}
         {!arActive && (
-          <div className="flex-shrink-0 px-4 pb-8 pt-3 flex flex-col gap-2 items-center"
+          <div className="flex-shrink-0 px-4 pb-8 pt-3 flex flex-col gap-3"
             style={{ background: '#000', borderTop: '1px solid rgba(212,175,55,0.1)' }}>
+
+            {/* Pre-AR size control */}
+            <div className="flex items-center justify-between px-1">
+              <span className="text-[11px] tracking-widest uppercase" style={{ color: '#C8A951', fontFamily: 'var(--font-body)' }}>
+                Dish Size in AR
+              </span>
+              <div className="flex items-center gap-2">
+                <button onPointerDown={() => scaleStep('out')}
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xl font-bold active:scale-90"
+                  style={{ background: 'rgba(200,169,81,0.12)', border: '1px solid rgba(200,169,81,0.3)' }}>−</button>
+                <span className="text-xs w-8 text-center" style={{ color: '#888', fontFamily: 'var(--font-text)' }}>
+                  {Math.round(scaleVal / 0.3 * 100)}%
+                </span>
+                <button onPointerDown={() => scaleStep('in')}
+                  className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xl font-bold active:scale-90"
+                  style={{ background: 'rgba(200,169,81,0.12)', border: '1px solid rgba(200,169,81,0.3)' }}>+</button>
+              </div>
+            </div>
+
             <motion.button
               whileTap={{ scale: 0.96 }} onClick={handleArTap}
-              className="w-full max-w-xs py-4 rounded-2xl font-bold text-black text-sm tracking-widest uppercase flex items-center justify-center gap-2"
+              className="w-full py-4 rounded-2xl font-bold text-black text-sm tracking-widest uppercase flex items-center justify-center gap-2"
               style={{ background: 'linear-gradient(135deg,#D4AF37 0%,#F0D060 50%,#A0842A 100%)', fontFamily: 'var(--font-body)' }}>
               <Cuboid size={18} />
               View in AR
             </motion.button>
-            <p className="text-gray-600 text-[11px] text-center px-2" style={{ fontFamily: 'var(--font-text)' }}>
-              Point camera at the <span style={{ color: '#C8A951' }}>floor</span> — dish appears at real size · Pinch to resize
+            <p className="text-gray-600 text-[11px] text-center" style={{ fontFamily: 'var(--font-text)' }}>
+              Set size above → point camera at the <span style={{ color: '#C8A951' }}>floor</span> to place
             </p>
           </div>
         )}
