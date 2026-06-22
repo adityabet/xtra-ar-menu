@@ -87,7 +87,20 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
     const onProgress = (e) => setProgress(Math.round(e.detail.totalProgress * 100));
     const onArStatus = (e) => {
       const s = e.detail.status;
-      if (s === 'session-started') setArStatus('started');
+      if (s === 'session-started') {
+        setArStatus('started');
+        // Auto-place after 2s — by then ARCore has detected the floor
+        setTimeout(() => {
+          const mv = viewerRef.current;
+          if (!mv) return;
+          // Simulate a tap in the center of model-viewer to trigger placement
+          const cx = mv.clientWidth / 2;
+          const cy = mv.clientHeight * 0.75; // lower center = floor area
+          mv.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: cx, clientY: cy }));
+          mv.dispatchEvent(new PointerEvent('pointerup',   { bubbles: true, clientX: cx, clientY: cy }));
+          mv.dispatchEvent(new MouseEvent('click',         { bubbles: true, clientX: cx, clientY: cy }));
+        }, 2000);
+      }
       else if (s === 'object-placed') setArStatus('placed');
       else if (s === 'not-presenting') setArStatus('idle');
     };
@@ -212,25 +225,24 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
           />
           {/* eslint-enable react/no-unknown-property */}
 
-          {/* "Tap floor to place" overlay — shown only during AR session before placement */}
+          {/* Overlay before placement */}
           {arStatus === 'started' && (
             <div className="absolute inset-0 flex flex-col items-center justify-end pb-24 pointer-events-none z-20">
               <motion.div
                 initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
                 className="flex flex-col items-center gap-3"
               >
-                {/* animated tap ring */}
                 <div className="relative w-16 h-16 flex items-center justify-center">
                   <div className="absolute inset-0 rounded-full animate-ping opacity-40"
                     style={{ background: 'rgba(200,169,81,0.4)' }} />
                   <div className="w-10 h-10 rounded-full flex items-center justify-center"
                     style={{ background: 'rgba(200,169,81,0.85)' }}>
-                    <span className="text-black text-xl">👆</span>
+                    <span className="text-black text-xl">📍</span>
                   </div>
                 </div>
                 <span className="text-white font-semibold text-sm px-5 py-2 rounded-full"
-                  style={{ background: 'rgba(0,0,0,0.65)', fontFamily: 'var(--font-body)' }}>
-                  Point at floor · Tap to place
+                  style={{ background: 'rgba(0,0,0,0.72)', fontFamily: 'var(--font-body)' }}>
+                  Point camera at floor — placing in 2s…
                 </span>
               </motion.div>
             </div>
