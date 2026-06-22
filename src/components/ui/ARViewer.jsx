@@ -217,8 +217,8 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
             loading="eager"
             reveal="auto"
             interaction-prompt="none"
-            shadow-intensity="0.2"
-            shadow-softness="0.5"
+            shadow-intensity="0.1"
+            shadow-softness="0.1"
             exposure="1.1"
             environment-image="neutral"
             style={{ width: '100%', height: '100%', background: '#000' }}
