@@ -71,6 +71,7 @@ function ArNotSupportedModal({ onClose }) {
 export default function ARViewer({ src, dishName, ingredients, onClose }) {
   const viewerRef = useRef(null);
   const [loading, setLoading]           = useState(true);
+  const [progress, setProgress]         = useState(0);
   const [arStatus, setArStatus]         = useState('idle'); // idle | started | placed
   const [showNoArModal, setShowNoArModal] = useState(false);
   const [ingOpen, setIngOpen]           = useState(true);
@@ -82,7 +83,8 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
     const el = viewerRef.current;
     if (!el) return;
 
-    const onLoad    = () => setLoading(false);
+    const onLoad     = () => { setLoading(false); setProgress(100); };
+    const onProgress = (e) => setProgress(Math.round(e.detail.totalProgress * 100));
     const onArStatus = (e) => {
       const s = e.detail.status;
       if (s === 'session-started') setArStatus('started');
@@ -92,10 +94,12 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
     const onError   = () => setLoading(false);
 
     el.addEventListener('load', onLoad);
+    el.addEventListener('progress', onProgress);
     el.addEventListener('ar-status', onArStatus);
     el.addEventListener('error', onError);
     return () => {
       el.removeEventListener('load', onLoad);
+      el.removeEventListener('progress', onProgress);
       el.removeEventListener('ar-status', onArStatus);
       el.removeEventListener('error', onError);
     };
@@ -157,7 +161,17 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
                 style={{ background: '#000' }}>
                 <div className="w-14 h-14 rounded-full border-2 animate-spin"
                   style={{ borderColor: 'rgba(212,175,55,0.2)', borderTopColor: '#D4AF37' }} />
-                <span className="text-gray-500 text-xs tracking-widest uppercase">Loading 3D Model…</span>
+                <div className="flex flex-col items-center gap-2 w-48">
+                  <span className="text-gray-500 text-xs tracking-widest uppercase">
+                    Loading 3D Model{progress > 0 ? ` ${progress}%` : '…'}
+                  </span>
+                  {progress > 0 && (
+                    <div className="w-full h-1 rounded-full" style={{ background: 'rgba(212,175,55,0.15)' }}>
+                      <div className="h-1 rounded-full transition-all duration-300"
+                        style={{ width: `${progress}%`, background: '#D4AF37' }} />
+                    </div>
+                  )}
+                </div>
               </motion.div>
             )}
           </AnimatePresence>
@@ -187,6 +201,8 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
             auto-rotate
             auto-rotate-delay="1500"
             rotation-per-second="10deg"
+            loading="eager"
+            reveal="auto"
             interaction-prompt="none"
             shadow-intensity="0.2"
             shadow-softness="0.5"
