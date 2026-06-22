@@ -299,16 +299,16 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
             ar
             ar-modes="webxr quick-look"
             ar-scale="fixed"
-            scale="0.35 0.35 0.35"
+            ar-placement="floor"
             camera-controls
             auto-rotate
             auto-rotate-delay="1200"
             rotation-per-second="12deg"
             interpolation-decay="200"
             interaction-prompt="none"
-            shadow-intensity="1.2"
-            shadow-softness="0.8"
-            exposure="1.15"
+            shadow-intensity="1"
+            shadow-softness="1"
+            exposure="1.1"
             environment-image="neutral"
             style={{ width: '100%', height: '100%', background: '#000', touchAction: 'none' }}
           />
