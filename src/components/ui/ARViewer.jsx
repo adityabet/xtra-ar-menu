@@ -252,18 +252,21 @@ export default function ARViewer({ src, dishName, onClose }) {
       const supported = await navigator.xr.isSessionSupported('immersive-ar');
       if (!supported) { setShowNoArModal(true); return; }
 
+      // Show AR overlay BEFORE requesting session so dom-overlay element is in DOM + visible
+      setStatus('ar');
+      await new Promise(r => setTimeout(r, 80));
+
+      const overlayEl = document.getElementById('ar-overlay');
       const session = await navigator.xr.requestSession('immersive-ar', {
         requiredFeatures: ['hit-test'],
+        optionalFeatures: ['dom-overlay'],
+        ...(overlayEl ? { domOverlay: { root: overlayEl } } : {}),
       });
       sessionRef.current = session;
 
       await rendererRef.current.xr.setSession(session);
-      setStatus('ar');
       placedRef.current  = false;
       posBufferRef.current = [];
-
-      const viewerSpace = await session.requestReferenceSpace('viewer');
-      hitSrcRef.current = await session.requestHitTestSource({ space: viewerSpace });
 
       // Tap to place dish
       session.addEventListener('select', () => {
@@ -290,6 +293,7 @@ export default function ARViewer({ src, dishName, onClose }) {
 
     } catch (e) {
       console.error('AR error:', e);
+      setStatus('ready'); // revert so button stays visible
       setShowNoArModal(true);
     }
   };
@@ -451,8 +455,9 @@ export default function ARViewer({ src, dishName, onClose }) {
         )}
       </motion.div>
 
-      {/* AR overlay — shown over the live camera feed */}
-      <div id="ar-overlay" style={{ display: isAR ? 'block' : 'none' }}
+      {/* AR overlay — always in DOM so dom-overlay can reference it; visibility controls display */}
+      <div id="ar-overlay"
+        style={{ position: 'fixed', inset: 0, zIndex: 70, visibility: isAR ? 'visible' : 'hidden', pointerEvents: isAR ? 'auto' : 'none' }}
         onTouchStart={onArTouchStart}
         onTouchMove={onArTouchMove}
         onTouchEnd={onArTouchEnd}>
