@@ -71,10 +71,12 @@ function ArNotSupportedModal({ onClose }) {
 export default function ARViewer({ src, dishName, ingredients, onClose }) {
   const viewerRef = useRef(null);
   const [loading, setLoading]           = useState(true);
-  const [arActive, setArActive]         = useState(false);
+  const [arStatus, setArStatus]         = useState('idle'); // idle | started | placed
   const [showNoArModal, setShowNoArModal] = useState(false);
   const [ingOpen, setIngOpen]           = useState(true);
   const [scaleVal, setScaleVal]         = useState(0.3);
+
+  const arActive = arStatus === 'started' || arStatus === 'placed';
 
   useEffect(() => {
     const el = viewerRef.current;
@@ -83,8 +85,9 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
     const onLoad    = () => setLoading(false);
     const onArStatus = (e) => {
       const s = e.detail.status;
-      setArActive(s === 'session-started' || s === 'object-placed');
-      if (s === 'not-presenting') setArActive(false);
+      if (s === 'session-started') setArStatus('started');
+      else if (s === 'object-placed') setArStatus('placed');
+      else if (s === 'not-presenting') setArStatus('idle');
     };
     const onError   = () => setLoading(false);
 
@@ -159,6 +162,16 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
             )}
           </AnimatePresence>
 
+          {/* Pinch-to-zoom hint in 3D mode */}
+          {arStatus === 'idle' && !loading && (
+            <div className="absolute bottom-3 left-0 right-0 flex justify-center pointer-events-none z-10">
+              <span className="text-[10px] px-3 py-1 rounded-full"
+                style={{ background: 'rgba(0,0,0,0.55)', color: '#999', fontFamily: 'var(--font-text)' }}>
+                Pinch to zoom · Drag to rotate
+              </span>
+            </div>
+          )}
+
           {/* eslint-disable react/no-unknown-property */}
           <model-viewer
             ref={viewerRef}
@@ -180,11 +193,32 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
             exposure="1.1"
             environment-image="neutral"
             style={{ width: '100%', height: '100%', background: '#000' }}
-          >
-            {/* dom-overlay slot — buttons visible over AR camera feed */}
-            <div slot="poster" />
-          </model-viewer>
+          />
           {/* eslint-enable react/no-unknown-property */}
+
+          {/* "Tap floor to place" overlay — shown only during AR session before placement */}
+          {arStatus === 'started' && (
+            <div className="absolute inset-0 flex flex-col items-center justify-end pb-24 pointer-events-none z-20">
+              <motion.div
+                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
+                className="flex flex-col items-center gap-3"
+              >
+                {/* animated tap ring */}
+                <div className="relative w-16 h-16 flex items-center justify-center">
+                  <div className="absolute inset-0 rounded-full animate-ping opacity-40"
+                    style={{ background: 'rgba(200,169,81,0.4)' }} />
+                  <div className="w-10 h-10 rounded-full flex items-center justify-center"
+                    style={{ background: 'rgba(200,169,81,0.85)' }}>
+                    <span className="text-black text-xl">👆</span>
+                  </div>
+                </div>
+                <span className="text-white font-semibold text-sm px-5 py-2 rounded-full"
+                  style={{ background: 'rgba(0,0,0,0.65)', fontFamily: 'var(--font-body)' }}>
+                  Point at floor · Tap to place
+                </span>
+              </motion.div>
+            </div>
+          )}
         </div>
 
         {/* Ingredients — collapsible */}
