@@ -416,8 +416,8 @@ export default function ARViewer({ src, dishName, onClose }) {
           )}
         </div>
 
-        {/* Bottom button — 3D view */}
-        {(status === 'ready') && (
+        {/* Bottom button — show always except when in AR session */}
+        {!isAR && (
           <div className="flex-shrink-0 px-4 pb-8 pt-4 flex flex-col gap-2 items-center"
             style={{ borderTop: '1px solid rgba(212,175,55,0.1)', background: '#000' }}>
             <motion.button
