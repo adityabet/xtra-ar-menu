@@ -77,8 +77,10 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
   const [ingOpen, setIngOpen]           = useState(true);
   const [scaleVal, setScaleVal]         = useState(0.3);
   const [zoomPct, setZoomPct]           = useState(null); // null = hidden
+  const [arZoomPct, setArZoomPct]       = useState(null);
   const defaultFovRef                   = useRef(null);
   const zoomTimerRef                    = useRef(null);
+  const arZoomTimerRef                  = useRef(null);
 
   const arActive = arStatus === 'started' || arStatus === 'placed';
 
@@ -124,16 +126,30 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
     };
     const onError   = () => setLoading(false);
 
+    // Watch scale attribute for AR pinch-to-zoom %
+    const baseScale = 0.3;
+    const observer = new MutationObserver(() => {
+      const raw = el.getAttribute('scale') || `${baseScale} ${baseScale} ${baseScale}`;
+      const s = parseFloat(raw.split(' ')[0]);
+      const pct = Math.round((s / baseScale) * 100);
+      setArZoomPct(pct);
+      clearTimeout(arZoomTimerRef.current);
+      arZoomTimerRef.current = setTimeout(() => setArZoomPct(null), 1500);
+    });
+    observer.observe(el, { attributes: true, attributeFilter: ['scale'] });
+
     el.addEventListener('load', onLoad);
     el.addEventListener('camera-change', onCameraChange);
     el.addEventListener('progress', onProgress);
     el.addEventListener('ar-status', onArStatus);
     el.addEventListener('error', onError);
     return () => {
+      observer.disconnect();
       el.removeEventListener('load', onLoad);
       el.removeEventListener('camera-change', onCameraChange);
       el.removeEventListener('progress', onProgress);
       clearTimeout(zoomTimerRef.current);
+      clearTimeout(arZoomTimerRef.current);
       el.removeEventListener('ar-status', onArStatus);
       el.removeEventListener('error', onError);
     };
@@ -357,6 +373,25 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
           </div>
         )}
       </motion.div>
+
+      {/* AR zoom % badge — fixed over the AR camera feed */}
+      <AnimatePresence>
+        {arActive && arZoomPct !== null && (
+          <motion.div
+            key="ar-zoom"
+            initial={{ opacity: 0, scale: 0.8 }}
+            animate={{ opacity: 1, scale: 1 }}
+            exit={{ opacity: 0, scale: 0.8 }}
+            transition={{ duration: 0.15 }}
+            className="fixed top-8 left-0 right-0 flex justify-center z-[999] pointer-events-none"
+          >
+            <span className="text-base font-bold px-5 py-2 rounded-full"
+              style={{ background: 'rgba(0,0,0,0.72)', color: '#D4AF37', fontFamily: 'var(--font-body)', letterSpacing: '0.05em' }}>
+              {arZoomPct}%
+            </span>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {showNoArModal && <ArNotSupportedModal onClose={() => setShowNoArModal(false)} />}
