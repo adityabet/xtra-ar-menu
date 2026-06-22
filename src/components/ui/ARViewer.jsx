@@ -76,6 +76,9 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
   const [showNoArModal, setShowNoArModal] = useState(false);
   const [ingOpen, setIngOpen]           = useState(true);
   const [scaleVal, setScaleVal]         = useState(0.3);
+  const [zoomPct, setZoomPct]           = useState(null); // null = hidden
+  const defaultFovRef                   = useRef(null);
+  const zoomTimerRef                    = useRef(null);
 
   const arActive = arStatus === 'started' || arStatus === 'placed';
 
@@ -83,7 +86,22 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
     const el = viewerRef.current;
     if (!el) return;
 
-    const onLoad     = () => { setLoading(false); setProgress(100); };
+    const onLoad     = () => {
+      setLoading(false);
+      setProgress(100);
+      // capture default FOV once model is loaded
+      defaultFovRef.current = el.getFieldOfView?.() ?? null;
+    };
+    const onCameraChange = () => {
+      if (!defaultFovRef.current) return;
+      const fov = el.getFieldOfView?.();
+      if (!fov) return;
+      // smaller FOV = zoomed in; larger = zoomed out. 100% = default view
+      const pct = Math.round((defaultFovRef.current / fov) * 100);
+      setZoomPct(pct);
+      clearTimeout(zoomTimerRef.current);
+      zoomTimerRef.current = setTimeout(() => setZoomPct(null), 1500);
+    };
     const onProgress = (e) => setProgress(Math.round(e.detail.totalProgress * 100));
     const onArStatus = (e) => {
       const s = e.detail.status;
@@ -107,12 +125,15 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
     const onError   = () => setLoading(false);
 
     el.addEventListener('load', onLoad);
+    el.addEventListener('camera-change', onCameraChange);
     el.addEventListener('progress', onProgress);
     el.addEventListener('ar-status', onArStatus);
     el.addEventListener('error', onError);
     return () => {
       el.removeEventListener('load', onLoad);
+      el.removeEventListener('camera-change', onCameraChange);
       el.removeEventListener('progress', onProgress);
+      clearTimeout(zoomTimerRef.current);
       el.removeEventListener('ar-status', onArStatus);
       el.removeEventListener('error', onError);
     };
@@ -198,6 +219,25 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
               </span>
             </div>
           )}
+
+          {/* Zoom % badge — appears while zooming, fades after 1.5s */}
+          <AnimatePresence>
+            {arStatus === 'idle' && zoomPct !== null && (
+              <motion.div
+                key="zoom-badge"
+                initial={{ opacity: 0, scale: 0.85 }}
+                animate={{ opacity: 1, scale: 1 }}
+                exit={{ opacity: 0, scale: 0.85 }}
+                transition={{ duration: 0.15 }}
+                className="absolute top-4 left-0 right-0 flex justify-center pointer-events-none z-10"
+              >
+                <span className="text-sm font-bold px-4 py-1.5 rounded-full"
+                  style={{ background: 'rgba(0,0,0,0.7)', color: '#D4AF37', fontFamily: 'var(--font-body)', letterSpacing: '0.05em' }}>
+                  {zoomPct}%
+                </span>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* eslint-disable react/no-unknown-property */}
           <model-viewer
