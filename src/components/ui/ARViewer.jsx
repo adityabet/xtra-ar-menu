@@ -254,8 +254,6 @@ export default function ARViewer({ src, dishName, onClose }) {
 
       const session = await navigator.xr.requestSession('immersive-ar', {
         requiredFeatures: ['hit-test'],
-        optionalFeatures: ['dom-overlay'],
-        domOverlay: { root: document.getElementById('ar-overlay') },
       });
       sessionRef.current = session;
 
@@ -416,9 +414,26 @@ export default function ARViewer({ src, dishName, onClose }) {
           )}
         </div>
 
+        {/* Ingredients panel — shown below 3D viewer */}
+        {!isAR && ingredients?.length > 0 && (
+          <div className="flex-shrink-0 px-4 pt-3 pb-2"
+            style={{ borderTop: '1px solid rgba(212,175,55,0.12)', background: '#0a0a0a' }}>
+            <p className="text-[10px] font-semibold tracking-widest uppercase mb-2"
+              style={{ color: '#C8A951', fontFamily: 'var(--font-body)' }}>✦ Ingredients</p>
+            <div className="flex flex-wrap gap-1.5">
+              {ingredients.map((ing) => (
+                <span key={ing} className="text-[11px] px-2.5 py-1 rounded-full"
+                  style={{ background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.22)', color: '#bbb', fontFamily: 'var(--font-text)' }}>
+                  {ing}
+                </span>
+              ))}
+            </div>
+          </div>
+        )}
+
         {/* Bottom button — show always except when in AR session */}
         {!isAR && (
-          <div className="flex-shrink-0 px-4 pb-8 pt-4 flex flex-col gap-2 items-center"
+          <div className="flex-shrink-0 px-4 pb-8 pt-3 flex flex-col gap-2 items-center"
             style={{ borderTop: '1px solid rgba(212,175,55,0.1)', background: '#000' }}>
             <motion.button
               initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
