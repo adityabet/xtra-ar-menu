@@ -76,17 +76,19 @@ function ArNotSupportedModal({ onClose }) {
 
 // ── Main ARViewer ──────────────────────────────────────────────────────────────
 export default function ARViewer({ src, dishName, onClose }) {
-  const canvasRef     = useRef(null);
-  const rendererRef   = useRef(null);
-  const sceneRef      = useRef(null);
-  const cameraRef     = useRef(null);
-  const controlsRef   = useRef(null);
-  const modelRef      = useRef(null);
-  const hitSrcRef     = useRef(null);
-  const reticleRef    = useRef(null);
-  const posBufferRef  = useRef([]);
-  const placedRef     = useRef(false);
-  const sessionRef    = useRef(null);
+  const canvasRef       = useRef(null);
+  const rendererRef     = useRef(null);
+  const sceneRef        = useRef(null);
+  const cameraRef       = useRef(null);
+  const controlsRef     = useRef(null);
+  const modelRef        = useRef(null);
+  const hitSrcRef       = useRef(null);
+  const reticleRef      = useRef(null);
+  const posBufferRef    = useRef([]);
+  const placedRef       = useRef(false);
+  const sessionRef      = useRef(null);
+  const baseScaleRef    = useRef(1);      // model's base scale after GLB load
+  const lastPinchRef    = useRef(null);   // last pinch distance for zoom gesture
 
   const [status, setStatus]           = useState('loading'); // loading | ready | ar | placed | error
   const [showNoArModal, setShowNoArModal] = useState(false);
@@ -163,6 +165,7 @@ export default function ARViewer({ src, dishName, onClose }) {
         const size = box.getSize(new THREE.Vector3());
         const scale = 0.22 / Math.max(size.x, size.y, size.z);
         model.scale.setScalar(scale);
+        baseScaleRef.current = scale; // save base scale for pinch zoom reference
 
         // Center on Y=0
         box.setFromObject(model);
@@ -295,6 +298,42 @@ export default function ARViewer({ src, dishName, onClose }) {
 
   const exitAR = () => { sessionRef.current?.end(); };
 
+  // AR model scale buttons
+  const arZoom = (dir) => {
+    const model = modelRef.current;
+    if (!model) return;
+    const cur = model.scale.x;
+    const next = dir === 'in'
+      ? Math.min(cur * 1.25, baseScaleRef.current * 4)   // max 4× real size
+      : Math.max(cur * 0.8,  baseScaleRef.current * 0.3); // min 30% real size
+    model.scale.setScalar(next);
+  };
+
+  // Pinch-to-zoom in AR — 2 fingers scale the placed model
+  const onArTouchStart = (e) => {
+    if (e.touches.length === 2) {
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      lastPinchRef.current = Math.sqrt(dx * dx + dy * dy);
+    }
+  };
+  const onArTouchMove = (e) => {
+    if (e.touches.length !== 2 || !lastPinchRef.current) return;
+    const model = modelRef.current;
+    if (!model) return;
+    const dx   = e.touches[0].clientX - e.touches[1].clientX;
+    const dy   = e.touches[0].clientY - e.touches[1].clientY;
+    const dist = Math.sqrt(dx * dx + dy * dy);
+    const ratio = dist / lastPinchRef.current;
+    const next = Math.max(
+      baseScaleRef.current * 0.3,
+      Math.min(model.scale.x * ratio, baseScaleRef.current * 4)
+    );
+    model.scale.setScalar(next);
+    lastPinchRef.current = dist;
+  };
+  const onArTouchEnd = () => { lastPinchRef.current = null; };
+
   const zoom = (dir) => {
     const cam = cameraRef.current;
     if (!cam) return;
@@ -398,7 +437,10 @@ export default function ARViewer({ src, dishName, onClose }) {
       </motion.div>
 
       {/* AR overlay — shown over the live camera feed */}
-      <div id="ar-overlay" style={{ display: isAR ? 'block' : 'none' }}>
+      <div id="ar-overlay" style={{ display: isAR ? 'block' : 'none' }}
+        onTouchStart={onArTouchStart}
+        onTouchMove={onArTouchMove}
+        onTouchEnd={onArTouchEnd}>
         {/* Exit AR */}
         <button
           onClick={exitAR}
@@ -423,13 +465,29 @@ export default function ARViewer({ src, dishName, onClose }) {
         )}
 
         {status === 'placed' && (
-          <div className="fixed bottom-12 left-0 right-0 flex justify-center z-[70]">
-            <div className="px-5 py-3 rounded-2xl text-center"
-              style={{ background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(12px)', border: '1px solid rgba(200,169,81,0.3)' }}>
-              <p className="text-xs" style={{ color: '#C8A951', fontFamily: 'var(--font-text)' }}>
-                ✦ Walk around to view from every angle
-              </p>
+          <div className="fixed bottom-10 left-0 right-0 flex flex-col items-center gap-3 z-[70]">
+            {/* Zoom buttons */}
+            <div className="flex items-center gap-3">
+              <button onTouchStart={() => arZoom('out')}
+                className="w-12 h-12 rounded-full flex items-center justify-center text-white text-2xl font-bold active:scale-90 transition-all"
+                style={{ background: 'rgba(0,0,0,0.65)', border: '1px solid rgba(212,175,55,0.35)', backdropFilter: 'blur(10px)' }}>
+                −
+              </button>
+              <div className="px-4 py-2 rounded-full"
+                style={{ background: 'rgba(0,0,0,0.55)', border: '1px solid rgba(200,169,81,0.25)', backdropFilter: 'blur(10px)' }}>
+                <p className="text-xs" style={{ color: '#C8A951', fontFamily: 'var(--font-text)' }}>
+                  Pinch or tap ± to resize
+                </p>
+              </div>
+              <button onTouchStart={() => arZoom('in')}
+                className="w-12 h-12 rounded-full flex items-center justify-center text-white text-2xl font-bold active:scale-90 transition-all"
+                style={{ background: 'rgba(0,0,0,0.65)', border: '1px solid rgba(212,175,55,0.35)', backdropFilter: 'blur(10px)' }}>
+                +
+              </button>
             </div>
+            <p className="text-[11px]" style={{ color: 'rgba(255,255,255,0.35)', fontFamily: 'var(--font-text)' }}>
+              ✦ Walk around to view from every angle
+            </p>
           </div>
         )}
       </div>
