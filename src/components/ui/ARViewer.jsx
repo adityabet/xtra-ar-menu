@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState, useCallback } from 'react';
+import { useEffect, useRef, useState } from 'react';
 import { motion, AnimatePresence } from 'framer-motion';
 import { X, RotateCcw, ZoomIn, ZoomOut, Cuboid, ChevronDown, ChevronUp, Smartphone, Cpu, MemoryStick, Globe } from 'lucide-react';
 
@@ -175,28 +175,11 @@ function IngredientsOverlay({ ingredients, dishName, arActive }) {
 // ── Main ARViewer ─────────────────────────────────────────────────────────────
 export default function ARViewer({ src, dishName, ingredients, onClose }) {
   const viewerRef = useRef(null);
-  const arRafRef = useRef(null);
-  const arAngleRef = useRef(0);
 
   const [loading, setLoading] = useState(true);
   const [arActive, setArActive] = useState(false);
   const [error, setError] = useState(false);
   const [showNoArModal, setShowNoArModal] = useState(false);
-
-  // Smooth 360° rotation loop for when dish is placed in AR
-  const startArRotation = useCallback(() => {
-    const tick = () => {
-      arAngleRef.current += 0.006;
-      const mv = viewerRef.current;
-      if (mv?.model?.scene) mv.model.scene.rotation.y = arAngleRef.current;
-      arRafRef.current = requestAnimationFrame(tick);
-    };
-    arRafRef.current = requestAnimationFrame(tick);
-  }, []);
-
-  const stopArRotation = useCallback(() => {
-    if (arRafRef.current) { cancelAnimationFrame(arRafRef.current); arRafRef.current = null; }
-  }, []);
 
   useEffect(() => {
     const el = viewerRef.current;
@@ -207,9 +190,8 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
     const onArStatus = (e) => {
       const s = e.detail.status;
       setArActive(s === 'session-started' || s === 'object-placed');
-      if (s === 'object-placed') startArRotation();
-      if (s === 'failed') setShowNoArModal(true); // AR started but device can't handle it
-      if (s === 'not-presenting') { setArActive(false); stopArRotation(); }
+      if (s === 'failed') setShowNoArModal(true);
+      if (s === 'not-presenting') { setArActive(false); }
     };
 
     const onError = () => { setLoading(false); setError(true); };
@@ -223,7 +205,7 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
       el.removeEventListener('error', onError);
       stopArRotation();
     };
-  }, [src, startArRotation, stopArRotation]);
+  }, [src]);
 
   // When AR button is tapped — always try to launch AR first, show modal only if it fails
   const handleArTap = async () => {
