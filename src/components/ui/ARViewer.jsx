@@ -163,8 +163,8 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
             auto-rotate-delay="1500"
             rotation-per-second="10deg"
             interaction-prompt="none"
-            shadow-intensity="1"
-            shadow-softness="1"
+            shadow-intensity="0.2"
+            shadow-softness="0.5"
             exposure="1.1"
             environment-image="neutral"
             style={{ width: '100%', height: '100%', background: '#000' }}
