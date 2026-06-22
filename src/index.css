@@ -1,0 +1,104 @@
+@import "tailwindcss";
+
+/* ── Font variables ───────────────────────────────────────────────────────── */
+:root {
+  --font-display: 'Playfair Display', Georgia, serif;
+  --font-body:    'Poppins', system-ui, sans-serif;
+  --font-text:    'Inter', system-ui, sans-serif;
+}
+
+/* ── Theme variables — warm terracotta nude ────────────────────────────── */
+:root {
+  --bg:         #EEE4D6;
+  --bg-2:       #E6D9C8;
+  --bg-3:       #DCCDB8;
+  --text:       #2A1A0A;
+  --text-muted: #604530;
+  --text-faint: #987055;
+  --border:     rgba(90,50,20,0.10);
+  --card-bg:    #E8DACC;
+  --nav-bg:     rgba(238,228,214,0.97);
+  --gold:       #C8A951;
+}
+
+@layer base {
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-text);
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+  }
+  #root { min-height: 100svh; }
+  ::-webkit-scrollbar { width: 3px; }
+  ::-webkit-scrollbar-track { background: var(--bg-2); }
+  ::-webkit-scrollbar-thumb { background: rgba(200,169,81,0.5); border-radius: 2px; }
+}
+
+@layer utilities {
+  .text-gold   { color: #C8A951; }
+  .bg-gold     { background-color: #C8A951; }
+  .border-gold { border-color: #C8A951; }
+
+  /* Light glass — same as website */
+  .glass {
+    background: rgba(255,255,255,0.6);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border);
+  }
+  /* Dark glass — for AR overlay only */
+  .glass-dark {
+    background: rgba(0,0,0,0.55);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid rgba(200,169,81,0.2);
+  }
+
+  .gold-gradient { background: linear-gradient(135deg, #C8A951 0%, #E8C96A 50%, #9A7A35 100%); }
+  .card-shadow   { box-shadow: 0 4px 20px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.05); }
+  .safe-bottom   { padding-bottom: env(safe-area-inset-bottom, 16px); }
+
+  .gold-line {
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #C8A951 50%, transparent);
+    opacity: 0.8;
+  }
+}
+
+/* ── Animations ───────────────────────────────────────────────────────────── */
+@keyframes shimmer {
+  0%   { background-position: -200% center; }
+  100% { background-position:  200% center; }
+}
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: translateY(0); }
+}
+@keyframes pulse-ring {
+  0%   { transform: scale(1); opacity: 0.7; }
+  100% { transform: scale(2); opacity: 0; }
+}
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+/* Logo shimmer — Playfair Display, dark brown + gold */
+.shimmer-gold {
+  font-family: var(--font-display) !important;
+  background: linear-gradient(90deg, #3B2A1A 0%, #C8A951 35%, #3B2A1A 55%, #C8A951 100%);
+  background-size: 200% auto;
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  animation: shimmer 4s linear infinite;
+}
+
+.animate-fade-up { animation: fadeUp 0.45s ease forwards; }
+.animate-spin    { animation: spin 1s linear infinite; }
+
+/* hide default model-viewer AR button — we render our own */
+model-viewer { width: 100%; height: 100%; background: transparent; }
+model-viewer::part(default-ar-button) { display: none !important; }
