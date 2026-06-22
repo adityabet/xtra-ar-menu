@@ -180,7 +180,7 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
             alt={dishName}
             ar
             ar-modes="webxr quick-look"
-            ar-scale="fixed"
+            ar-scale="auto"
             ar-placement="floor"
             scale="0.3 0.3 0.3"
             camera-controls
