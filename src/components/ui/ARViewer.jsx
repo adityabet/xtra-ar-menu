@@ -159,7 +159,6 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
             ar-placement="floor"
             scale="0.3 0.3 0.3"
             camera-controls
-            disable-zoom
             auto-rotate
             auto-rotate-delay="1500"
             rotation-per-second="10deg"
@@ -170,6 +169,36 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
             environment-image="neutral"
             style={{ width: '100%', height: '100%', background: '#000' }}
           />
+
+          {/* Pinch-to-zoom overlay in AR mode */}
+          {arActive && (
+            <div
+              className="absolute inset-0 z-10"
+              style={{ touchAction: 'none' }}
+              onTouchStart={(e) => {
+                if (e.touches.length === 2) {
+                  const dx = e.touches[0].clientX - e.touches[1].clientX;
+                  const dy = e.touches[0].clientY - e.touches[1].clientY;
+                  viewerRef.current._pinchDist = Math.sqrt(dx*dx + dy*dy);
+                  viewerRef.current._pinchScale = parseFloat(viewerRef.current.getAttribute('scale') || '0.3');
+                }
+              }}
+              onTouchMove={(e) => {
+                if (e.touches.length !== 2 || !viewerRef.current?._pinchDist) return;
+                const dx = e.touches[0].clientX - e.touches[1].clientX;
+                const dy = e.touches[0].clientY - e.touches[1].clientY;
+                const dist = Math.sqrt(dx*dx + dy*dy);
+                const ratio = dist / viewerRef.current._pinchDist;
+                const base = viewerRef.current._pinchScale;
+                const next = Math.max(0.08, Math.min(base * ratio, 1.2));
+                const s = `${next} ${next} ${next}`;
+                viewerRef.current.setAttribute('scale', s);
+                viewerRef.current._pinchDist = dist;
+                viewerRef.current._pinchScale = next;
+              }}
+              onTouchEnd={() => { if (viewerRef.current) viewerRef.current._pinchDist = null; }}
+            />
+          )}
           {/* eslint-enable react/no-unknown-property */}
         </div>
 
