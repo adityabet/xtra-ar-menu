@@ -188,7 +188,7 @@ export default function DishDetailPage() {
             className="text-xs leading-relaxed"
             style={{ fontFamily: 'var(--font-text)', color: 'var(--text-muted)' }}
           >
-            Point your camera at the <strong>centre of the table</strong> and move your phone slightly back from the edge — AR needs to see a clear flat surface to place the dish.
+            Point your camera at the <strong>floor in front of you</strong> — the dish will appear at real size so you can see exactly how it looks before ordering.
           </p>
         </motion.div>
       </div>

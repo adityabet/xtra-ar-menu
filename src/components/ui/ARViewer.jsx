@@ -297,9 +297,10 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
             {...(src.usdz ? { 'ios-src': src.usdz } : {})}
             alt={dishName}
             ar
-            ar-modes="webxr quick-look"
+            ar-modes="scene-viewer webxr quick-look"
             ar-scale="fixed"
             ar-placement="floor"
+            scale="0.25 0.25 0.25"
             camera-controls
             auto-rotate
             auto-rotate-delay="1200"
@@ -358,7 +359,7 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
               View in AR
             </motion.button>
             <p className="text-gray-600 text-[11px] text-center px-2" style={{ fontFamily: 'var(--font-text)' }}>
-              Point camera at the <span style={{ color: '#C8A951' }}>centre of the table</span> — move phone slightly back if dish doesn't appear
+              Point camera at the <span style={{ color: '#C8A951' }}>floor in front of you</span> — the dish will appear at real size
             </p>
           </div>
         )}
