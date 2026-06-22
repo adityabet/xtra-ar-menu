@@ -278,7 +278,30 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
             exposure="1.1"
             environment-image="neutral"
             style={{ width: '100%', height: '100%', background: '#000' }}
-          />
+          >
+            {/* Hotspot badge — floats above the model, visible in 3D + AR */}
+            {(zoomPct !== null || arZoomPct !== null) && (
+              <div
+                slot="hotspot-zoom"
+                data-position="0m 0.18m 0m"
+                data-normal="0m 1m 0m"
+                style={{
+                  background: 'rgba(0,0,0,0.72)',
+                  color: '#D4AF37',
+                  fontFamily: 'var(--font-body)',
+                  fontWeight: 700,
+                  fontSize: '14px',
+                  letterSpacing: '0.05em',
+                  padding: '5px 14px',
+                  borderRadius: '999px',
+                  whiteSpace: 'nowrap',
+                  pointerEvents: 'none',
+                }}
+              >
+                {arActive ? (arZoomPct ?? 100) : (zoomPct ?? 100)}%
+              </div>
+            )}
+          </model-viewer>
           {/* eslint-enable react/no-unknown-property */}
 
           {/* Overlay before placement */}
