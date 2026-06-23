@@ -305,7 +305,31 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
             exposure="1.1"
             environment-image="neutral"
             style={{ width: '100%', height: '100%', background: '#000' }}
-          />
+          >
+            {/* AR-only zoom % hotspot — attaches to model in AR space */}
+            {arActive && arZoomPct !== null && (
+              <div
+                slot="hotspot-ar-zoom"
+                data-position="0m 0.2m 0m"
+                data-normal="0m 1m 0m"
+                style={{
+                  background: 'rgba(0,0,0,0.75)',
+                  color: '#D4AF37',
+                  fontFamily: 'var(--font-body)',
+                  fontWeight: 700,
+                  fontSize: '15px',
+                  letterSpacing: '0.05em',
+                  padding: '6px 16px',
+                  borderRadius: '999px',
+                  whiteSpace: 'nowrap',
+                  pointerEvents: 'none',
+                  border: '1px solid rgba(212,175,55,0.4)',
+                }}
+              >
+                {arZoomPct}%
+              </div>
+            )}
+          </model-viewer>
           {/* eslint-enable react/no-unknown-property */}
 
           {/* Full-screen tap overlay — disappears only after real finger tap places the model */}
