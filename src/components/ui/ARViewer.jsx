@@ -249,7 +249,22 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
             </div>
           )}
 
-          {/* zoom % shown via hotspot on the model — no separate overlay needed */}
+          {/* OUTSIDE AR: zoom % badge at top of 3D viewer */}
+          <AnimatePresence>
+            {arStatus === 'idle' && zoomPct !== null && (
+              <motion.div
+                key="zoom-3d"
+                initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }}
+                exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.15 }}
+                className="absolute top-4 left-0 right-0 flex justify-center pointer-events-none z-10"
+              >
+                <span className="text-sm font-bold px-4 py-1.5 rounded-full"
+                  style={{ background: 'rgba(0,0,0,0.72)', color: '#D4AF37', fontFamily: 'var(--font-body)', letterSpacing: '0.05em' }}>
+                  {zoomPct}%
+                </span>
+              </motion.div>
+            )}
+          </AnimatePresence>
 
           {/* eslint-disable react/no-unknown-property */}
           <model-viewer
@@ -274,30 +289,8 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
             exposure="1.1"
             environment-image="neutral"
             style={{ width: '100%', height: '100%', background: '#000' }}
-          >
-            {/* Hotspot badge — floats above the model center, visible in 3D + AR */}
-            <div
-              slot="hotspot-zoom"
-              data-position="0m 0.25m 0m"
-              data-normal="0m 1m 0m"
-              style={{
-                background: 'rgba(0,0,0,0.72)',
-                color: '#D4AF37',
-                fontFamily: 'var(--font-body)',
-                fontWeight: 700,
-                fontSize: '14px',
-                letterSpacing: '0.05em',
-                padding: '5px 14px',
-                borderRadius: '999px',
-                whiteSpace: 'nowrap',
-                pointerEvents: 'none',
-                display: (zoomPct !== null || arZoomPct !== null) ? 'block' : 'none',
-              }}
-            >
-              {arActive ? (arZoomPct ?? 100) : (zoomPct ?? 100)}%
-            </div>
-          </model-viewer>
-          {/* eslint-enable react/no-unknown-property */}
+          />
+          {/* eslint-enable react/no-unknown-property */>
 
           {/* Overlay before placement */}
           {arStatus === 'started' && (
@@ -393,6 +386,23 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
       </motion.div>
 
 
+
+      {/* INSIDE AR: zoom % badge fixed over the AR camera feed */}
+      <AnimatePresence>
+        {arActive && arZoomPct !== null && (
+          <motion.div
+            key="zoom-ar"
+            initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }}
+            exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.15 }}
+            className="fixed top-8 left-0 right-0 flex justify-center pointer-events-none z-[999]"
+          >
+            <span className="text-base font-bold px-5 py-2 rounded-full"
+              style={{ background: 'rgba(0,0,0,0.72)', color: '#D4AF37', fontFamily: 'var(--font-body)', letterSpacing: '0.05em' }}>
+              {arZoomPct}%
+            </span>
+          </motion.div>
+        )}
+      </AnimatePresence>
 
       <AnimatePresence>
         {showNoArModal && <ArNotSupportedModal onClose={() => setShowNoArModal(false)} />}
