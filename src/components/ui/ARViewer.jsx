@@ -81,6 +81,7 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
   const defaultFovRef                   = useRef(null);
   const zoomTimerRef                    = useRef(null);
   const arZoomTimerRef                  = useRef(null);
+  const arStatusRef                     = useRef('idle');
 
   const arActive = arStatus === 'started' || arStatus === 'placed';
 
@@ -108,6 +109,7 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
     const onArStatus = (e) => {
       const s = e.detail.status;
       if (s === 'session-started') {
+        arStatusRef.current = 'started';
         setArStatus('started');
         // Auto-place after 2s — by then ARCore has detected the floor
         setTimeout(() => {
@@ -172,19 +174,29 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
 
     const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
 
+    // --- Quick early rejection ---
     if (isIOS) {
-      // iOS needs USDZ file + Quick Look support
       if (!src.usdz || !el.canActivateAR) { setShowNoArModal(true); return; }
     } else {
-      // Android: explicitly check WebXR immersive-ar — canActivateAR can be true
-      // even when ARCore is missing because Chrome reports WebXR as available
+      // model-viewer's own check — false = definitely not supported
+      if (!el.canActivateAR) { setShowNoArModal(true); return; }
+      // WebXR API check — some phones say true but ARCore is missing
       const xrSupported = await navigator.xr?.isSessionSupported('immersive-ar').catch(() => false) ?? false;
       if (!xrSupported) { setShowNoArModal(true); return; }
     }
 
+    // --- Timeout fallback: if AR session doesn't start in 5s, show popup ---
+    // Handles phones where activateAR() doesn't throw but silently does nothing
+    const noStartTimer = setTimeout(() => {
+      if (arStatusRef.current !== 'started' && arStatusRef.current !== 'placed') {
+        setShowNoArModal(true);
+      }
+    }, 5000);
+
     try {
       await el.activateAR();
     } catch {
+      clearTimeout(noStartTimer);
       setShowNoArModal(true);
     }
   };
