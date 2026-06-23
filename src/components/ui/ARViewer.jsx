@@ -290,7 +290,7 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
             environment-image="neutral"
             style={{ width: '100%', height: '100%', background: '#000' }}
           />
-          {/* eslint-enable react/no-unknown-property */>
+          {/* eslint-enable react/no-unknown-property */}
 
           {/* Overlay before placement */}
           {arStatus === 'started' && (
