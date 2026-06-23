@@ -169,7 +169,19 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
   const handleArTap = async () => {
     const el = viewerRef.current;
     if (!el) return;
-    if (!el.canActivateAR) { setShowNoArModal(true); return; }
+
+    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+
+    if (isIOS) {
+      // iOS needs USDZ file + Quick Look support
+      if (!src.usdz || !el.canActivateAR) { setShowNoArModal(true); return; }
+    } else {
+      // Android: explicitly check WebXR immersive-ar — canActivateAR can be true
+      // even when ARCore is missing because Chrome reports WebXR as available
+      const xrSupported = await navigator.xr?.isSessionSupported('immersive-ar').catch(() => false) ?? false;
+      if (!xrSupported) { setShowNoArModal(true); return; }
+    }
+
     try {
       await el.activateAR();
     } catch {
