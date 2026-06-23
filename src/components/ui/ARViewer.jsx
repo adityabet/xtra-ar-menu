@@ -111,16 +111,8 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
       if (s === 'session-started') {
         arStatusRef.current = 'started';
         setArStatus('started');
-        // Auto-place after 600ms — minimises ring visibility on floor
-        setTimeout(() => {
-          const mv = viewerRef.current;
-          if (!mv) return;
-          const cx = mv.clientWidth / 2;
-          const cy = mv.clientHeight * 0.75;
-          mv.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: cx, clientY: cy }));
-          mv.dispatchEvent(new PointerEvent('pointerup',   { bubbles: true, clientX: cx, clientY: cy }));
-          mv.dispatchEvent(new MouseEvent('click',         { bubbles: true, clientX: cx, clientY: cy }));
-        }, 600);
+        // WebXR requires a REAL finger tap to lock — synthetic events are ignored by the browser
+        // We show a full-screen tap overlay instead
       }
       else if (s === 'object-placed') setArStatus('placed');
       else if (s === 'not-presenting') setArStatus('idle');
@@ -303,25 +295,33 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
           />
           {/* eslint-enable react/no-unknown-property */}
 
-          {/* Overlay before placement */}
+          {/* Full-screen tap overlay — disappears only after real finger tap places the model */}
           {arStatus === 'started' && (
-            <div className="absolute inset-0 flex flex-col items-center justify-end pb-24 pointer-events-none z-20">
+            <div className="absolute inset-0 z-20 flex flex-col items-center justify-end pb-20"
+              style={{ background: 'rgba(0,0,0,0.25)' }}>
               <motion.div
-                initial={{ opacity: 0, y: 10 }} animate={{ opacity: 1, y: 0 }}
-                className="flex flex-col items-center gap-3"
+                initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }}
+                transition={{ delay: 0.3 }}
+                className="flex flex-col items-center gap-4 w-full px-8"
               >
-                <div className="relative w-16 h-16 flex items-center justify-center">
-                  <div className="absolute inset-0 rounded-full animate-ping opacity-40"
-                    style={{ background: 'rgba(200,169,81,0.4)' }} />
-                  <div className="w-10 h-10 rounded-full flex items-center justify-center"
-                    style={{ background: 'rgba(200,169,81,0.85)' }}>
-                    <span className="text-black text-xl">📍</span>
-                  </div>
+                {/* pulsing hand icon */}
+                <div className="relative w-20 h-20 flex items-center justify-center">
+                  <div className="absolute inset-0 rounded-full animate-ping"
+                    style={{ background: 'rgba(212,175,55,0.35)' }} />
+                  <div className="absolute inset-2 rounded-full animate-ping"
+                    style={{ background: 'rgba(212,175,55,0.2)', animationDelay: '0.3s' }} />
+                  <span className="text-4xl relative z-10">👆</span>
                 </div>
-                <span className="text-white font-semibold text-sm px-5 py-2 rounded-full"
-                  style={{ background: 'rgba(0,0,0,0.72)', fontFamily: 'var(--font-body)' }}>
-                  Point camera at floor — placing in 2s…
-                </span>
+                <div className="flex flex-col items-center gap-1">
+                  <span className="text-white text-lg font-bold text-center"
+                    style={{ fontFamily: 'var(--font-body)', textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>
+                    Point at floor & tap to place
+                  </span>
+                  <span className="text-xs text-center"
+                    style={{ color: 'rgba(255,255,255,0.7)', fontFamily: 'var(--font-text)' }}>
+                    Once placed the dish stays fixed on the floor
+                  </span>
+                </div>
               </motion.div>
             </div>
           )}
