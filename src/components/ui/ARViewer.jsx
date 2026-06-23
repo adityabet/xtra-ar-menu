@@ -111,17 +111,16 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
       if (s === 'session-started') {
         arStatusRef.current = 'started';
         setArStatus('started');
-        // Auto-place after 2s — by then ARCore has detected the floor
+        // Auto-place after 600ms — minimises ring visibility on floor
         setTimeout(() => {
           const mv = viewerRef.current;
           if (!mv) return;
-          // Simulate a tap in the center of model-viewer to trigger placement
           const cx = mv.clientWidth / 2;
-          const cy = mv.clientHeight * 0.75; // lower center = floor area
+          const cy = mv.clientHeight * 0.75;
           mv.dispatchEvent(new PointerEvent('pointerdown', { bubbles: true, clientX: cx, clientY: cy }));
           mv.dispatchEvent(new PointerEvent('pointerup',   { bubbles: true, clientX: cx, clientY: cy }));
           mv.dispatchEvent(new MouseEvent('click',         { bubbles: true, clientX: cx, clientY: cy }));
-        }, 2000);
+        }, 600);
       }
       else if (s === 'object-placed') setArStatus('placed');
       else if (s === 'not-presenting') setArStatus('idle');
