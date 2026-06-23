@@ -111,8 +111,21 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
       if (s === 'session-started') {
         arStatusRef.current = 'started';
         setArStatus('started');
-        // WebXR requires a REAL finger tap to lock — synthetic events are ignored by the browser
-        // We show a full-screen tap overlay instead
+        // Try to shrink the reticle ring via model-viewer's internal Three.js scene
+        setTimeout(() => {
+          try {
+            const mv = viewerRef.current;
+            const scene = mv?.scene || mv?._scene || mv?.shadowRoot?.querySelector('canvas')?.__three_scene__;
+            if (scene?.traverse) {
+              scene.traverse((obj) => {
+                const name = (obj.name || '').toLowerCase();
+                if (name.includes('reticle') || name.includes('ring') || name.includes('indicator')) {
+                  obj.scale.set(0.3, 0.3, 0.3);
+                }
+              });
+            }
+          } catch (_) { /* internal API unavailable — ring stays default size */ }
+        }, 300);
       }
       else if (s === 'object-placed') setArStatus('placed');
       else if (s === 'not-presenting') setArStatus('idle');
