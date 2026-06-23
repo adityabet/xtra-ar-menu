@@ -82,8 +82,46 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
   const zoomTimerRef                    = useRef(null);
   const arZoomTimerRef                  = useRef(null);
   const arStatusRef                     = useRef('idle');
+  const arPinchRef                      = useRef(null); // { dist, basePct }
 
   const arActive = arStatus === 'started' || arStatus === 'placed';
+
+  // Detect pinch in AR via window touch events (WebXR dom-overlay still fires these)
+  useEffect(() => {
+    if (!arActive) return;
+
+    const onTouchStart = (e) => {
+      if (e.touches.length === 2) {
+        const dx = e.touches[0].clientX - e.touches[1].clientX;
+        const dy = e.touches[0].clientY - e.touches[1].clientY;
+        arPinchRef.current = {
+          dist: Math.hypot(dx, dy),
+          basePct: arZoomPct ?? 100,
+        };
+      }
+    };
+    const onTouchMove = (e) => {
+      if (e.touches.length !== 2 || !arPinchRef.current) return;
+      const dx = e.touches[0].clientX - e.touches[1].clientX;
+      const dy = e.touches[0].clientY - e.touches[1].clientY;
+      const dist = Math.hypot(dx, dy);
+      const ratio = dist / arPinchRef.current.dist;
+      const pct = Math.round(Math.min(Math.max(arPinchRef.current.basePct * ratio, 20), 300));
+      setArZoomPct(pct);
+      clearTimeout(arZoomTimerRef.current);
+      arZoomTimerRef.current = setTimeout(() => setArZoomPct(null), 1500);
+    };
+    const onTouchEnd = () => { arPinchRef.current = null; };
+
+    window.addEventListener('touchstart', onTouchStart, { passive: true });
+    window.addEventListener('touchmove',  onTouchMove,  { passive: true });
+    window.addEventListener('touchend',   onTouchEnd,   { passive: true });
+    return () => {
+      window.removeEventListener('touchstart', onTouchStart);
+      window.removeEventListener('touchmove',  onTouchMove);
+      window.removeEventListener('touchend',   onTouchEnd);
+    };
+  }, [arActive, arZoomPct]);
 
   useEffect(() => {
     const el = viewerRef.current;
