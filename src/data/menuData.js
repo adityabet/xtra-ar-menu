@@ -1,14 +1,14 @@
 // All models are served from /public/models/
 // Each model has a GLB (Android/3D) and USDZ (iOS AR) path
 export const MODELS = {
-  pizza:      { glb: '/models/pizza.glb',        usdz: '/models/pizza.usdz' },
-  burger:     { glb: '/models/burger.glb',       usdz: '/models/burger.usdz' },
-  fries:      { glb: '/models/fries.glb',        usdz: '/models/fries.usdz' },
-  platter:    { glb: '/models/platter.glb',      usdz: '/models/platter.usdz' },
-  salad:      { glb: '/models/platter.glb',      usdz: null },   // salad.glb deleted — using platter as fallback, no iOS AR
-  coffee:     { glb: '/models/coffee.glb',       usdz: '/models/coffee.usdz' },
-  coffeeShop: { glb: '/models/coffee-shop.glb',  usdz: '/models/coffee-shop.usdz' },
-  icedCoffee: { glb: '/models/iced-coffee.glb',  usdz: '/models/iced-coffee.usdz' },
+  pizza:      { glb: '/models/pizza.glb',        usdz: '/models/pizza.glb.usdz' },
+  burger:     { glb: '/models/burger.glb',       usdz: '/models/burger.glb.usdz' },
+  fries:      { glb: '/models/fries.glb',        usdz: '/models/fries.glb.usdz' },
+  platter:    { glb: '/models/platter.glb',      usdz: '/models/platter.glb.usdz' },
+  salad:      { glb: '/models/platter.glb',      usdz: '/models/platter.glb.usdz' },
+  coffee:     { glb: '/models/coffee.glb',       usdz: '/models/coffee.glb.usdz' },
+  coffeeShop: { glb: '/models/coffee-shop.glb',  usdz: '/models/coffee-shop.glb.usdz' },
+  icedCoffee: { glb: '/models/iced-coffee.glb',  usdz: '/models/iced-coffee.glb.usdz' },
 };
 
 // All GLB URLs to preload silently on app boot
