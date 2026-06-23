@@ -249,24 +249,7 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
             </div>
           )}
 
-          {/* Zoom % badge — appears while zooming, fades after 1.5s */}
-          <AnimatePresence>
-            {arStatus === 'idle' && zoomPct !== null && (
-              <motion.div
-                key="zoom-badge"
-                initial={{ opacity: 0, scale: 0.85 }}
-                animate={{ opacity: 1, scale: 1 }}
-                exit={{ opacity: 0, scale: 0.85 }}
-                transition={{ duration: 0.15 }}
-                className="absolute top-4 left-0 right-0 flex justify-center pointer-events-none z-10"
-              >
-                <span className="text-sm font-bold px-4 py-1.5 rounded-full"
-                  style={{ background: 'rgba(0,0,0,0.7)', color: '#D4AF37', fontFamily: 'var(--font-body)', letterSpacing: '0.05em' }}>
-                  {zoomPct}%
-                </span>
-              </motion.div>
-            )}
-          </AnimatePresence>
+          {/* zoom % shown via hotspot on the model — no separate overlay needed */}
 
           {/* eslint-disable react/no-unknown-property */}
           <model-viewer
@@ -295,7 +278,7 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
             {/* Hotspot badge — floats above the model center, visible in 3D + AR */}
             <div
               slot="hotspot-zoom"
-              data-position="0m 0.12m 0m"
+              data-position="0m 0.25m 0m"
               data-normal="0m 1m 0m"
               style={{
                 background: 'rgba(0,0,0,0.72)',
@@ -409,24 +392,7 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
         )}
       </motion.div>
 
-      {/* AR zoom % badge — fixed over the AR camera feed */}
-      <AnimatePresence>
-        {arActive && arZoomPct !== null && (
-          <motion.div
-            key="ar-zoom"
-            initial={{ opacity: 0, scale: 0.8 }}
-            animate={{ opacity: 1, scale: 1 }}
-            exit={{ opacity: 0, scale: 0.8 }}
-            transition={{ duration: 0.15 }}
-            className="fixed top-8 left-0 right-0 flex justify-center z-[999] pointer-events-none"
-          >
-            <span className="text-base font-bold px-5 py-2 rounded-full"
-              style={{ background: 'rgba(0,0,0,0.72)', color: '#D4AF37', fontFamily: 'var(--font-body)', letterSpacing: '0.05em' }}>
-              {arZoomPct}%
-            </span>
-          </motion.div>
-        )}
-      </AnimatePresence>
+
 
       <AnimatePresence>
         {showNoArModal && <ArNotSupportedModal onClose={() => setShowNoArModal(false)} />}
