@@ -1,6 +1,6 @@
 import { useEffect } from 'react';
 import { motion } from 'framer-motion';
-import { Star, MapPin } from 'lucide-react';
+import { Star, MapPin, Navigation, MessageSquare } from 'lucide-react';
 import Navbar from '../components/layout/Navbar';
 import CategoryCard from '../components/menu/CategoryCard';
 import { categories, ALL_MODEL_URLS } from '../data/menuData';
@@ -60,10 +60,36 @@ export default function Home() {
                 <span className="font-bold" style={{ color: '#C8A951' }}>5.0</span> Rating
               </span>
               <span className="w-px h-3" style={{ background: 'var(--border)' }} />
-              <span className="flex items-center gap-1">
+              <a
+                href="https://www.google.com/maps/place/The+Brewyard+Speciality+Coffee/@18.4751611,73.8618864,16z/data=!3m1!4b1!4m6!3m5!1s0x3bc2eb2f7a228a93:0x7ddc7a54f15b739b!8m2!3d18.4751611!4d73.8618864!16s%2Fg%2F11x1w5gsfy!18m1!1e1?entry=ttu&g_ep=EgoyMDI2MDYxNi4wIKXMDSoASAFQAw%3D%3D"
+                target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-1" style={{ color: 'inherit' }}
+              >
                 <MapPin size={10} color="#C8A951" />
                 Navale Bridge, Pune
-              </span>
+              </a>
+            </div>
+
+            {/* Directions + Reviews buttons */}
+            <div className="flex items-center justify-center gap-3 mb-4">
+              <a
+                href="https://www.google.com/maps/place/The+Brewyard+Speciality+Coffee/@18.4751611,73.8618864,16z/data=!3m1!4b1!4m6!3m5!1s0x3bc2eb2f7a228a93:0x7ddc7a54f15b739b!8m2!3d18.4751611!4d73.8618864!16s%2Fg%2F11x1w5gsfy!18m1!1e1?entry=ttu&g_ep=EgoyMDI2MDYxNi4wIKXMDSoASAFQAw%3D%3D"
+                target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-full text-[12px] font-semibold active:scale-95 transition-transform"
+                style={{ background: 'rgba(200,169,81,0.13)', border: '1px solid rgba(200,169,81,0.3)', color: '#C8A951', fontFamily: 'var(--font-body)' }}
+              >
+                <Navigation size={13} />
+                Directions
+              </a>
+              <a
+                href="https://www.google.com/maps/place/The+Brewyard+Speciality+Coffee/@18.4751611,73.8618864,16z/data=!4m8!3m7!1s0x3bc2eb2f7a228a93:0x7ddc7a54f15b739b!8m2!3d18.4751611!4d73.8618864!9m1!1b1!16s%2Fg%2F11x1w5gsfy!18m1!1e1?entry=ttu&g_ep=EgoyMDI2MDYxNi4wIKXMDSoASAFQAw%3D%3D"
+                target="_blank" rel="noopener noreferrer"
+                className="flex items-center gap-1.5 px-4 py-2 rounded-full text-[12px] font-semibold active:scale-95 transition-transform"
+                style={{ background: 'rgba(200,169,81,0.13)', border: '1px solid rgba(200,169,81,0.3)', color: '#C8A951', fontFamily: 'var(--font-body)' }}
+              >
+                <MessageSquare size={13} />
+                Rate Us
+              </a>
             </div>
 
             {/* AR badge */}
