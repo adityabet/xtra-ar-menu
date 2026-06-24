@@ -344,12 +344,12 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
             environment-image="neutral"
             style={{ width: '100%', height: '100%', background: '#000' }}
           >
-            {/* AR-only zoom % hotspot — attaches to model in AR space */}
+            {/* AR-only zoom % hotspot — centered on model, faces camera */}
             {arActive && arZoomPct !== null && (
               <div
                 slot="hotspot-ar-zoom"
-                data-position="0m 0.2m 0m"
-                data-normal="0m 1m 0m"
+                data-position="0m 0m 0m"
+                data-normal="0m 0m 1m"
                 style={{
                   background: 'rgba(0,0,0,0.75)',
                   color: '#D4AF37',
@@ -472,23 +472,6 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
       </motion.div>
 
 
-
-      {/* INSIDE AR: zoom % badge fixed over the AR camera feed */}
-      <AnimatePresence>
-        {arActive && arZoomPct !== null && (
-          <motion.div
-            key="zoom-ar"
-            initial={{ opacity: 0, y: -6 }} animate={{ opacity: 1, y: 0 }}
-            exit={{ opacity: 0, y: -6 }} transition={{ duration: 0.15 }}
-            className="fixed top-8 left-0 right-0 flex justify-center pointer-events-none z-[999]"
-          >
-            <span className="text-base font-bold px-5 py-2 rounded-full"
-              style={{ background: 'rgba(0,0,0,0.72)', color: '#D4AF37', fontFamily: 'var(--font-body)', letterSpacing: '0.05em' }}>
-              {arZoomPct}%
-            </span>
-          </motion.div>
-        )}
-      </AnimatePresence>
 
       <AnimatePresence>
         {showNoArModal && <ArNotSupportedModal onClose={() => setShowNoArModal(false)} />}
