@@ -328,7 +328,7 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
             alt={dishName}
             ar
             ar-modes="webxr quick-look"
-            ar-scale="auto"
+            ar-scale="fixed"
             ar-placement="floor"
             scale="0.3 0.3 0.3"
             camera-controls
@@ -369,6 +369,16 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
             )}
           </model-viewer>
           {/* eslint-enable react/no-unknown-property */}
+
+          {/* Lock overlay after placement — absorbs single-finger drags so model stays fixed */}
+          {arStatus === 'placed' && (
+            <div
+              className="absolute inset-0 z-10"
+              style={{ background: 'transparent' }}
+              onTouchStart={(e) => { if (e.touches.length === 1) e.stopPropagation(); }}
+              onTouchMove={(e)  => { if (e.touches.length === 1) e.stopPropagation(); }}
+            />
+          )}
 
           {/* Full-screen tap overlay — disappears only after real finger tap places the model */}
           {arStatus === 'started' && (
