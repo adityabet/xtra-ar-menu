@@ -323,7 +323,7 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
             {...(src.usdz ? { 'ios-src': src.usdz } : {})}
             alt={dishName}
             ar
-            ar-modes="scene-viewer webxr quick-look"
+            ar-modes="webxr quick-look"
             ar-scale="fixed"
             ar-placement="floor"
             scale="0.3 0.3 0.3"
@@ -338,7 +338,12 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
             shadow-softness="0"
             exposure="1.1"
             environment-image="neutral"
-            style={{ width: '100%', height: '100%', background: '#000' }}
+            style={{
+              width: '100%', height: '100%', background: '#000',
+              // Hide model while scanning so user doesn't see it shaking before placement
+              opacity: arStatus === 'started' ? 0 : 1,
+              transition: arStatus === 'placed' ? 'opacity 0.3s ease' : 'none',
+            }}
           >
             {/* AR-only zoom % hotspot — centered on model, faces camera */}
             {arActive && arZoomPct !== null && (
@@ -396,11 +401,11 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
                 <div className="flex flex-col items-center gap-1">
                   <span className="text-white text-lg font-bold text-center"
                     style={{ fontFamily: 'var(--font-body)', textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>
-                    Point at floor & tap to place
+                    Point at table &amp; tap to place
                   </span>
                   <span className="text-xs text-center"
                     style={{ color: 'rgba(255,255,255,0.7)', fontFamily: 'var(--font-text)' }}>
-                    Once placed the dish stays fixed on the floor
+                    Aim close to you on the table surface, then tap
                   </span>
                 </div>
               </motion.div>
