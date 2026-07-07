@@ -216,29 +216,25 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
 
     const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
 
-    // --- Quick early rejection ---
-    if (isIOS) {
-      if (!src.usdz || !el.canActivateAR) { setShowNoArModal(true); return; }
-    } else {
-      // model-viewer's own check — false = definitely not supported
-      if (!el.canActivateAR) { setShowNoArModal(true); return; }
-      // WebXR API check — some phones say true but ARCore is missing
-      const xrSupported = await navigator.xr?.isSessionSupported('immersive-ar').catch(() => false) ?? false;
-      if (!xrSupported) { setShowNoArModal(true); return; }
-    }
+    if (!el.canActivateAR) { setShowNoArModal(true); return; }
+    if (isIOS && !src.usdz)  { setShowNoArModal(true); return; }
 
-    // --- Timeout fallback: if AR session doesn't start in 5s, show popup ---
-    // Handles phones where activateAR() doesn't throw but silently does nothing
+    // Timeout fallback — clears itself if page hides (Scene Viewer opened external app)
     const noStartTimer = setTimeout(() => {
       if (arStatusRef.current !== 'started' && arStatusRef.current !== 'placed') {
         setShowNoArModal(true);
       }
     }, 5000);
 
+    // Scene Viewer opens as a separate Android app — page goes hidden immediately
+    const onHide = () => clearTimeout(noStartTimer);
+    document.addEventListener('visibilitychange', onHide, { once: true });
+
     try {
       await el.activateAR();
     } catch {
       clearTimeout(noStartTimer);
+      document.removeEventListener('visibilitychange', onHide);
       setShowNoArModal(true);
     }
   };
@@ -327,7 +323,7 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
             {...(src.usdz ? { 'ios-src': src.usdz } : {})}
             alt={dishName}
             ar
-            ar-modes="webxr quick-look"
+            ar-modes="scene-viewer webxr quick-look"
             ar-scale="fixed"
             ar-placement="floor"
             scale="0.3 0.3 0.3"
