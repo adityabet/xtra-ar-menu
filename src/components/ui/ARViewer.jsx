@@ -67,13 +67,59 @@ function ArNotSupportedModal({ onClose }) {
   );
 }
 
+// ── Safari Required Modal (iOS Chrome) ───────────────────────────────────────
+function SafariRequiredModal({ onClose }) {
+  return (
+    <motion.div
+      initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }}
+      className="fixed inset-0 z-[200] flex items-end justify-center"
+      style={{ background: 'rgba(0,0,0,0.75)', backdropFilter: 'blur(6px)' }}
+      onClick={onClose}
+    >
+      <motion.div
+        initial={{ y: 80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 80, opacity: 0 }}
+        transition={{ type: 'spring', stiffness: 260, damping: 28 }}
+        className="w-full max-w-md rounded-t-3xl pb-10 px-5 pt-5"
+        style={{ background: '#111', border: '1px solid rgba(200,169,81,0.2)' }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        <div className="w-10 h-1 rounded-full mx-auto mb-5" style={{ background: 'rgba(255,255,255,0.15)' }} />
+        <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
+          style={{ background: 'rgba(200,169,81,0.10)', border: '1px solid rgba(200,169,81,0.25)' }}>
+          <span className="text-4xl">🧭</span>
+        </div>
+        <h2 className="text-white text-lg font-bold text-center mb-1" style={{ fontFamily: 'var(--font-body)' }}>
+          Open in Safari
+        </h2>
+        <p className="text-center text-sm mb-5" style={{ color: '#999', fontFamily: 'var(--font-text)', lineHeight: 1.6 }}>
+          AR on iPhone only works in <span style={{ color: '#C8A951', fontWeight: 600 }}>Safari</span>.{'\n'}
+          Please open this page in Safari to view dishes in AR.
+        </p>
+        <div className="rounded-2xl px-4 py-3 mb-4 flex items-start gap-3"
+          style={{ background: 'rgba(200,169,81,0.08)', border: '1px solid rgba(200,169,81,0.2)' }}>
+          <span className="text-xl mt-0.5">💡</span>
+          <span className="text-xs" style={{ color: '#aaa', fontFamily: 'var(--font-text)', lineHeight: 1.6 }}>
+            Tap the <span style={{ color: '#C8A951' }}>Share button</span> in your browser → select{' '}
+            <span style={{ color: '#C8A951' }}>"Open in Safari"</span>
+          </span>
+        </div>
+        <button onClick={onClose} className="w-full py-3.5 rounded-2xl text-sm font-semibold"
+          style={{ background: 'rgba(200,169,81,0.12)', border: '1px solid rgba(200,169,81,0.25)', color: '#C8A951', fontFamily: 'var(--font-body)' }}>
+          Got it
+        </button>
+      </motion.div>
+    </motion.div>
+  );
+}
+
 // ── Main ARViewer ──────────────────────────────────────────────────────────────
 export default function ARViewer({ src, dishName, ingredients, onClose }) {
   const viewerRef = useRef(null);
   const [loading, setLoading]           = useState(true);
   const [progress, setProgress]         = useState(0);
   const [arStatus, setArStatus]         = useState('idle'); // idle | started | placed
-  const [showNoArModal, setShowNoArModal] = useState(false);
+  const [showNoArModal, setShowNoArModal]     = useState(false);
+  const [showSafariModal, setShowSafariModal] = useState(false);
   const [ingOpen, setIngOpen]           = useState(true);
   const [scaleVal, setScaleVal]         = useState(0.3);
   const [zoomPct, setZoomPct]           = useState(null); // null = hidden
@@ -214,7 +260,11 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
     const el = viewerRef.current;
     if (!el) return;
 
-    const isIOS = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    const isIOS    = /iphone|ipad|ipod/i.test(navigator.userAgent);
+    const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent);
+
+    // iPhone on Chrome/Firefox — Quick Look only works in Safari
+    if (isIOS && !isSafari) { setShowSafariModal(true); return; }
 
     if (!el.canActivateAR) { setShowNoArModal(true); return; }
     if (isIOS && !src.usdz)  { setShowNoArModal(true); return; }
@@ -486,6 +536,9 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
 
       <AnimatePresence>
         {showNoArModal && <ArNotSupportedModal onClose={() => setShowNoArModal(false)} />}
+      </AnimatePresence>
+      <AnimatePresence>
+        {showSafariModal && <SafariRequiredModal onClose={() => setShowSafariModal(false)} />}
       </AnimatePresence>
     </>
   );
