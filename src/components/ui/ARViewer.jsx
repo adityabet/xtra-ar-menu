@@ -211,7 +211,27 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
           } catch (_) { /* internal API unavailable — ring stays default size */ }
         }, 300);
       }
-      else if (s === 'object-placed') setArStatus('placed');
+      else if (s === 'object-placed') {
+        setArStatus('placed');
+        // Cancel the hit-test source so model locks to WorldAnchor only
+        // Without this, hit-test keeps updating position → drift on low-end phones
+        setTimeout(() => {
+          try {
+            const mv = viewerRef.current;
+            const ar = mv?._renderer?.arRenderer;
+            if (ar) {
+              ar._hitTestSource?.cancel();
+              ar._hitTestSource = null;
+            }
+            // Also try alternate internal path
+            const ar2 = mv?._arRenderer;
+            if (ar2) {
+              ar2._hitTestSource?.cancel();
+              ar2._hitTestSource = null;
+            }
+          } catch (_) {}
+        }, 80);
+      }
       else if (s === 'not-presenting') setArStatus('idle');
     };
     const onError   = () => setLoading(false);
@@ -388,6 +408,7 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
             shadow-softness="0"
             exposure="1.1"
             environment-image="neutral"
+            interpolation-decay="200"
             style={{
               width: '100%', height: '100%', background: '#000',
               // Hide model while scanning so user doesn't see it shaking before placement
