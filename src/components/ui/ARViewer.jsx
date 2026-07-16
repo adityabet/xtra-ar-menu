@@ -195,6 +195,9 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
       if (s === 'session-started') {
         arStatusRef.current = 'started';
         setArStatus('started');
+        // Shrink model to invisible so reticle ring is visible but model isn't
+        // User can see the surface detection ring and tap exactly on table
+        try { viewerRef.current?.setAttribute('scale', '0.0001 0.0001 0.0001'); } catch (_) {}
         // Try to shrink the reticle ring via model-viewer's internal Three.js scene
         setTimeout(() => {
           try {
@@ -213,6 +216,12 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
       }
       else if (s === 'object-placed') {
         setArStatus('placed');
+        // Restore actual scale so model appears right on the surface
+        try {
+          const v = viewerRef.current;
+          const sc = scaleVal;
+          v?.setAttribute('scale', `${sc} ${sc} ${sc}`);
+        } catch (_) {}
         // Cancel the hit-test source so model locks to WorldAnchor only
         // Without this, hit-test keeps updating position → drift on low-end phones
         setTimeout(() => {
@@ -409,12 +418,7 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
             exposure="1.1"
             environment-image="neutral"
             interpolation-decay="200"
-            style={{
-              width: '100%', height: '100%', background: '#000',
-              // Hide model while scanning so user doesn't see it shaking before placement
-              opacity: arStatus === 'started' ? 0 : 1,
-              transition: arStatus === 'placed' ? 'opacity 0.3s ease' : 'none',
-            }}
+            style={{ width: '100%', height: '100%', background: '#000' }}
           >
             {/* AR-only zoom % hotspot — centered on model, faces camera */}
             {arActive && arZoomPct !== null && (
@@ -472,11 +476,11 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
                 <div className="flex flex-col items-center gap-1">
                   <span className="text-white text-lg font-bold text-center"
                     style={{ fontFamily: 'var(--font-body)', textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>
-                    Point at table &amp; tap to place
+                    Point at table surface
                   </span>
                   <span className="text-xs text-center"
                     style={{ color: 'rgba(255,255,255,0.7)', fontFamily: 'var(--font-text)' }}>
-                    Aim close to you on the table surface, then tap
+                    Wait for the ring to appear on the table, then tap
                   </span>
                 </div>
               </motion.div>
