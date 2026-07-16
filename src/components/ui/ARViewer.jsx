@@ -129,6 +129,7 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
   const arZoomTimerRef                  = useRef(null);
   const arStatusRef                     = useRef('idle');
   const arPinchRef                      = useRef(null); // { dist, basePct }
+  const preArScaleRef                   = useRef(0.3);  // scale saved before AR starts
 
   const arActive = arStatus === 'started' || arStatus === 'placed';
 
@@ -195,9 +196,13 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
       if (s === 'session-started') {
         arStatusRef.current = 'started';
         setArStatus('started');
-        // Shrink model to invisible so reticle ring is visible but model isn't
-        // User can see the surface detection ring and tap exactly on table
-        try { viewerRef.current?.setAttribute('scale', '0.0001 0.0001 0.0001'); } catch (_) {}
+        // Save current scale then shrink to invisible — reticle stays visible
+        try {
+          const mv = viewerRef.current;
+          const cur = parseFloat((mv?.getAttribute('scale') || '0.3 0.3 0.3').split(' ')[0]);
+          preArScaleRef.current = isNaN(cur) ? 0.3 : cur;
+          mv?.setAttribute('scale', '0.0001 0.0001 0.0001');
+        } catch (_) {}
         // Try to shrink the reticle ring via model-viewer's internal Three.js scene
         setTimeout(() => {
           try {
@@ -216,11 +221,10 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
       }
       else if (s === 'object-placed') {
         setArStatus('placed');
-        // Restore actual scale so model appears right on the surface
+        // Restore saved pre-AR scale so model appears right on the surface
         try {
-          const v = viewerRef.current;
-          const sc = scaleVal;
-          v?.setAttribute('scale', `${sc} ${sc} ${sc}`);
+          const sc = preArScaleRef.current;
+          viewerRef.current?.setAttribute('scale', `${sc} ${sc} ${sc}`);
         } catch (_) {}
         // Cancel the hit-test source so model locks to WorldAnchor only
         // Without this, hit-test keeps updating position → drift on low-end phones
