@@ -241,21 +241,31 @@ export default function PalmARViewer({ src, dishName, onClose }) {
               zIndex: 15,
             }}
           >
+            {/* Realistic shadow/plate under the dish */}
+            <div className="absolute bottom-0 left-1/2 pointer-events-none"
+              style={{
+                transform: 'translateX(-50%)',
+                width: '70%',
+                height: '12px',
+                background: 'radial-gradient(ellipse, rgba(0,0,0,0.45) 0%, transparent 70%)',
+                borderRadius: '50%',
+                filter: 'blur(3px)',
+              }}
+            />
+
             {/* eslint-disable react/no-unknown-property */}
             <model-viewer
               ref={modelRef}
               src={src.glb}
               alt={dishName}
-              auto-rotate
-              auto-rotate-delay="0"
-              rotation-per-second="20deg"
-              shadow-intensity="0"
-              shadow-softness="0"
-              exposure="1.3"
+              shadow-intensity="1.2"
+              shadow-softness="0.8"
+              exposure="1.5"
               environment-image="neutral"
               interaction-prompt="none"
               loading="eager"
               reveal="auto"
+              camera-orbit="0deg 75deg 105%"
               style={{
                 width: '100%',
                 height: '100%',
