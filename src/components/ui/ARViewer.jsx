@@ -129,7 +129,6 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
   const arZoomTimerRef                  = useRef(null);
   const arStatusRef                     = useRef('idle');
   const arPinchRef                      = useRef(null); // { dist, basePct }
-  const preArScaleRef                   = useRef(0.3);  // scale saved before AR starts
 
   const arActive = arStatus === 'started' || arStatus === 'placed';
 
@@ -181,10 +180,11 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
       defaultFovRef.current = el.getFieldOfView?.() ?? null;
     };
     const onCameraChange = () => {
+      // Block during AR — pinch in AR must NOT affect outside 3D model zoom
+      if (arStatusRef.current !== 'idle') return;
       if (!defaultFovRef.current) return;
       const fov = el.getFieldOfView?.();
       if (!fov) return;
-      // smaller FOV = zoomed in; larger = zoomed out. 100% = default view
       const pct = Math.round((defaultFovRef.current / fov) * 100);
       setZoomPct(pct);
       clearTimeout(zoomTimerRef.current);
@@ -196,52 +196,15 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
       if (s === 'session-started') {
         arStatusRef.current = 'started';
         setArStatus('started');
-        // Save current scale then shrink to invisible — reticle stays visible
-        try {
-          const mv = viewerRef.current;
-          const cur = parseFloat((mv?.getAttribute('scale') || '0.3 0.3 0.3').split(' ')[0]);
-          preArScaleRef.current = isNaN(cur) ? 0.3 : cur;
-          mv?.setAttribute('scale', '0.0001 0.0001 0.0001');
-        } catch (_) {}
-        // Try to shrink the reticle ring via model-viewer's internal Three.js scene
-        setTimeout(() => {
-          try {
-            const mv = viewerRef.current;
-            const scene = mv?.scene || mv?._scene || mv?.shadowRoot?.querySelector('canvas')?.__three_scene__;
-            if (scene?.traverse) {
-              scene.traverse((obj) => {
-                const name = (obj.name || '').toLowerCase();
-                if (name.includes('reticle') || name.includes('ring') || name.includes('indicator')) {
-                  obj.scale.set(0.3, 0.3, 0.3);
-                }
-              });
-            }
-          } catch (_) { /* internal API unavailable — ring stays default size */ }
-        }, 300);
       }
       else if (s === 'object-placed') {
         setArStatus('placed');
-        // Restore saved pre-AR scale so model appears right on the surface
-        try {
-          const sc = preArScaleRef.current;
-          viewerRef.current?.setAttribute('scale', `${sc} ${sc} ${sc}`);
-        } catch (_) {}
-        // Cancel the hit-test source so model locks to WorldAnchor only
-        // Without this, hit-test keeps updating position → drift on low-end phones
+        // Cancel hit-test so model locks to WorldAnchor — stops drift on low-end phones
         setTimeout(() => {
           try {
             const mv = viewerRef.current;
-            const ar = mv?._renderer?.arRenderer;
-            if (ar) {
-              ar._hitTestSource?.cancel();
-              ar._hitTestSource = null;
-            }
-            // Also try alternate internal path
-            const ar2 = mv?._arRenderer;
-            if (ar2) {
-              ar2._hitTestSource?.cancel();
-              ar2._hitTestSource = null;
-            }
+            const ar = mv?._renderer?.arRenderer || mv?._arRenderer;
+            if (ar) { ar._hitTestSource?.cancel(); ar._hitTestSource = null; }
           } catch (_) {}
         }, 80);
       }
@@ -407,7 +370,7 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
             alt={dishName}
             ar
             ar-modes="webxr quick-look"
-            ar-scale="fixed"
+            ar-scale="auto"
             ar-placement="floor"
             scale="0.3 0.3 0.3"
             camera-controls
