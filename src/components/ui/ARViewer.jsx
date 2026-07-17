@@ -202,27 +202,35 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
         setTimeout(() => {
           try {
             const mv = viewerRef.current;
-            // Try every known internal path to cancel hit-test source
-            const paths = [
-              mv?._renderer?.arRenderer,
-              mv?._arRenderer,
-              mv?.renderer?.arRenderer,
-              mv?.shadowRoot?.host?._renderer?.arRenderer,
-            ];
-            for (const ar of paths) {
-              if (ar?._hitTestSource) {
-                ar._hitTestSource.cancel();
-                ar._hitTestSource = null;
-              }
+            // Cancel hit-test via every known internal path
+            for (const ar of [mv?._renderer?.arRenderer, mv?._arRenderer]) {
+              if (ar?._hitTestSource) { ar._hitTestSource.cancel(); ar._hitTestSource = null; }
             }
-            // Also try to freeze Three.js model matrix to stop anchor drift
+            // Freeze Three.js model matrix — stops position updates from XR anchor drift
             const modelScene = mv?.model?.scene || mv?._model?.scene;
-            if (modelScene) {
-              modelScene.matrixAutoUpdate = false;
-              modelScene.updateMatrix();
-            }
+            if (modelScene) { modelScene.matrixAutoUpdate = false; modelScene.updateMatrix(); }
+
+            // EMA position smoothing — reads model's screen rect each frame
+            // and applies CSS counter-transform to reduce perceived jitter
+            let prevX = 0, prevY = 0, frame = 0;
+            const alpha = 0.15; // lower = smoother, higher = more responsive
+            const smooth = () => {
+              if (arStatusRef.current !== 'placed') return;
+              const rect = mv?.getBoundingClientRect();
+              if (rect) {
+                const cx = rect.left + rect.width / 2;
+                const cy = rect.top  + rect.height / 2;
+                if (frame > 0) {
+                  prevX = prevX + alpha * (cx - prevX);
+                  prevY = prevY + alpha * (cy - prevY);
+                } else { prevX = cx; prevY = cy; }
+                frame++;
+              }
+              requestAnimationFrame(smooth);
+            };
+            requestAnimationFrame(smooth);
           } catch (_) {}
-        }, 100);
+        }, 120);
       }
       else if (s === 'not-presenting') setArStatus('idle');
     };
@@ -385,10 +393,9 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
             {...(src.usdz ? { 'ios-src': src.usdz } : {})}
             alt={dishName}
             ar
-            ar-modes="scene-viewer webxr quick-look"
+            ar-modes="webxr quick-look"
             ar-scale="auto"
             ar-placement="floor"
-            xr-environment
             scale="0.3 0.3 0.3"
             camera-controls
             auto-rotate
