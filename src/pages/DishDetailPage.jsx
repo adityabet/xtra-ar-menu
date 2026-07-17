@@ -4,7 +4,7 @@ import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, Cuboid, Clock, Flame, Star, ChefHat } from 'lucide-react';
 import { getDishById } from '../data/menuData';
 import VegBadge from '../components/menu/VegBadge';
-import ARViewer from '../components/ui/ARViewer';
+import ARViewer from '../components/ui/PalmARViewer';
 
 export default function DishDetailPage() {
   const { dishId } = useParams();
@@ -188,7 +188,7 @@ export default function DishDetailPage() {
             className="text-xs leading-relaxed"
             style={{ fontFamily: 'var(--font-text)', color: 'var(--text-muted)' }}
           >
-            Point your camera at the <strong>floor in front of you</strong> — the dish will appear at real size so you can see exactly how it looks before ordering.
+            Tap the button below, then <strong>show your open palm</strong> to the camera — the dish will appear right on your hand!
           </p>
         </motion.div>
       </div>
