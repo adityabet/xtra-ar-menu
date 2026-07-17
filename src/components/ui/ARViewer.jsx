@@ -385,9 +385,10 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
             {...(src.usdz ? { 'ios-src': src.usdz } : {})}
             alt={dishName}
             ar
-            ar-modes="webxr quick-look"
+            ar-modes="scene-viewer webxr quick-look"
             ar-scale="auto"
             ar-placement="floor"
+            xr-environment
             scale="0.3 0.3 0.3"
             camera-controls
             auto-rotate
