@@ -199,14 +199,30 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
       }
       else if (s === 'object-placed') {
         setArStatus('placed');
-        // Cancel hit-test so model locks to WorldAnchor — stops drift on low-end phones
         setTimeout(() => {
           try {
             const mv = viewerRef.current;
-            const ar = mv?._renderer?.arRenderer || mv?._arRenderer;
-            if (ar) { ar._hitTestSource?.cancel(); ar._hitTestSource = null; }
+            // Try every known internal path to cancel hit-test source
+            const paths = [
+              mv?._renderer?.arRenderer,
+              mv?._arRenderer,
+              mv?.renderer?.arRenderer,
+              mv?.shadowRoot?.host?._renderer?.arRenderer,
+            ];
+            for (const ar of paths) {
+              if (ar?._hitTestSource) {
+                ar._hitTestSource.cancel();
+                ar._hitTestSource = null;
+              }
+            }
+            // Also try to freeze Three.js model matrix to stop anchor drift
+            const modelScene = mv?.model?.scene || mv?._model?.scene;
+            if (modelScene) {
+              modelScene.matrixAutoUpdate = false;
+              modelScene.updateMatrix();
+            }
           } catch (_) {}
-        }, 80);
+        }, 100);
       }
       else if (s === 'not-presenting') setArStatus('idle');
     };
@@ -384,7 +400,6 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
             shadow-softness="0"
             exposure="1.1"
             environment-image="neutral"
-            interpolation-decay="200"
             style={{ width: '100%', height: '100%', background: '#000' }}
           >
             {/* AR-only zoom % hotspot — centered on model, faces camera */}
