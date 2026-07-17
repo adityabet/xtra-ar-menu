@@ -190,13 +190,31 @@ export default function PalmARViewer({ src, dishName, onClose }) {
             exit={{ opacity: 0, y: 20 }}
             className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-5 pointer-events-none"
           >
-            {/* Animated hand icon */}
+            {/* Professional palm SVG */}
             <motion.div
-              animate={{ scale: [1, 1.08, 1], rotate: [0, 5, -5, 0] }}
-              transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-              className="text-7xl"
+              animate={{ y: [0, -8, 0] }}
+              transition={{ duration: 2.5, repeat: Infinity, ease: 'easeInOut' }}
             >
-              ✋
+              <svg width="90" height="110" viewBox="0 0 90 110" fill="none" xmlns="http://www.w3.org/2000/svg">
+                {/* Palm base */}
+                <path d="M18 58 C16 48 15 38 15 30 C15 24 19 20 24 20 C27 20 30 22 31 26 L31 44" stroke="#C8A951" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+                {/* Index finger */}
+                <path d="M31 44 L31 18 C31 13 35 10 39 10 C43 10 46 13 46 18 L46 44" stroke="#C8A951" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+                {/* Middle finger */}
+                <path d="M46 44 L46 14 C46 9 50 6 54 6 C58 6 61 9 61 14 L61 44" stroke="#C8A951" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+                {/* Ring finger */}
+                <path d="M61 44 L61 18 C61 13 65 10 69 10 C73 10 76 13 76 18 L76 44" stroke="#C8A951" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+                {/* Pinky */}
+                <path d="M76 44 L76 26 C76 21 79 18 82 18 C85 18 88 21 88 26 L88 52 C88 62 82 70 74 72" stroke="#C8A951" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+                {/* Palm body */}
+                <path d="M15 58 C14 68 16 76 22 82 L34 92 C38 96 44 98 50 98 C62 98 74 90 76 78 L76 72 C68 76 58 78 48 76 C34 74 20 66 15 58 Z" stroke="#C8A951" strokeWidth="2.5" fill="rgba(200,169,81,0.08)" strokeLinejoin="round"/>
+                {/* Wrist lines */}
+                <path d="M28 96 C34 102 42 106 50 106" stroke="#C8A951" strokeWidth="1.5" strokeLinecap="round" opacity="0.5"/>
+                <path d="M24 100 C30 106 40 110 50 110" stroke="#C8A951" strokeWidth="1" strokeLinecap="round" opacity="0.3"/>
+                {/* Palm center glow dot */}
+                <circle cx="46" cy="72" r="3" fill="#C8A951" opacity="0.6"/>
+                <circle cx="46" cy="72" r="6" fill="#C8A951" opacity="0.15"/>
+              </svg>
             </motion.div>
 
             {/* Scanning ring */}
