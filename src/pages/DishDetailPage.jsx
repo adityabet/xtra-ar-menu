@@ -1,10 +1,10 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import { ChevronLeft, Cuboid, Clock, Flame, Star, ChefHat } from 'lucide-react';
 import { getDishById } from '../data/menuData';
 import VegBadge from '../components/menu/VegBadge';
-import ARViewer from '../components/ui/PalmARViewer';
+import ARViewer from '../components/ui/ARViewer';
 
 export default function DishDetailPage() {
   const { dishId } = useParams();
@@ -12,6 +12,13 @@ export default function DishDetailPage() {
   const [arOpen, setArOpen] = useState(false);
 
   const result = getDishById(dishId);
+
+  // Eagerly fetch this dish's model into browser cache as soon as page opens
+  useEffect(() => {
+    if (result?.dish?.model?.glb) {
+      fetch(result.dish.model.glb, { cache: 'force-cache', priority: 'high' }).catch(() => {});
+    }
+  }, [result?.dish?.model?.glb]);
 
   if (!result) {
     return (
@@ -188,7 +195,7 @@ export default function DishDetailPage() {
             className="text-xs leading-relaxed"
             style={{ fontFamily: 'var(--font-text)', color: 'var(--text-muted)' }}
           >
-            Tap the button below, then <strong>show your open palm</strong> to the camera — the dish will appear right on your hand!
+            Tap the button below, then <strong>point your camera at the dining table</strong> — the dish appears right on the surface!
           </p>
         </motion.div>
       </div>

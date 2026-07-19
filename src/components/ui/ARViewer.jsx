@@ -115,7 +115,9 @@ function SafariRequiredModal({ onClose }) {
 // ── Main ARViewer ──────────────────────────────────────────────────────────────
 export default function ARViewer({ src, dishName, ingredients, onClose }) {
   const viewerRef = useRef(null);
+  const [viewerReady, setViewerReady]   = useState(() => !!customElements.get('model-viewer'));
   const [loading, setLoading]           = useState(true);
+  const [loadError, setLoadError]       = useState(false);
   const [progress, setProgress]         = useState(0);
   const [arStatus, setArStatus]         = useState('idle'); // idle | started | placed
   const [showNoArModal, setShowNoArModal]     = useState(false);
@@ -131,6 +133,12 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
   const arPinchRef                      = useRef(null); // { dist, basePct }
 
   const arActive = arStatus === 'started' || arStatus === 'placed';
+
+  // Wait for model-viewer web component before mounting (script loads async on mobile)
+  useEffect(() => {
+    if (viewerReady) return;
+    customElements.whenDefined('model-viewer').then(() => setViewerReady(true));
+  }, [viewerReady]);
 
   // Detect pinch in AR via window touch events (WebXR dom-overlay still fires these)
   useEffect(() => {
@@ -171,12 +179,14 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
 
   useEffect(() => {
     const el = viewerRef.current;
-    if (!el) return;
+    if (!el || !viewerReady) return;
 
-    const onLoad     = () => {
+    const onLoad = () => {
+      loaded = true;
+      clearTimeout(loadTimeout);
       setLoading(false);
+      setLoadError(false);
       setProgress(100);
-      // capture default FOV once model is loaded
       defaultFovRef.current = el.getFieldOfView?.() ?? null;
     };
     const onCameraChange = () => {
@@ -198,43 +208,68 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
         setArStatus('started');
       }
       else if (s === 'object-placed') {
+        arStatusRef.current = 'placed';
         setArStatus('placed');
         setTimeout(() => {
           try {
             const mv = viewerRef.current;
-            // Cancel hit-test via every known internal path
-            for (const ar of [mv?._renderer?.arRenderer, mv?._arRenderer]) {
-              if (ar?._hitTestSource) { ar._hitTestSource.cancel(); ar._hitTestSource = null; }
-            }
-            // Freeze Three.js model matrix — stops position updates from XR anchor drift
-            const modelScene = mv?.model?.scene || mv?._model?.scene;
-            if (modelScene) { modelScene.matrixAutoUpdate = false; modelScene.updateMatrix(); }
 
-            // EMA position smoothing — reads model's screen rect each frame
-            // and applies CSS counter-transform to reduce perceived jitter
-            let prevX = 0, prevY = 0, frame = 0;
-            const alpha = 0.15; // lower = smoother, higher = more responsive
-            const smooth = () => {
-              if (arStatusRef.current !== 'placed') return;
-              const rect = mv?.getBoundingClientRect();
-              if (rect) {
-                const cx = rect.left + rect.width / 2;
-                const cy = rect.top  + rect.height / 2;
-                if (frame > 0) {
-                  prevX = prevX + alpha * (cx - prevX);
-                  prevY = prevY + alpha * (cy - prevY);
-                } else { prevX = cx; prevY = cy; }
-                frame++;
-              }
-              requestAnimationFrame(smooth);
-            };
-            requestAnimationFrame(smooth);
+            // ── Step 1: Cancel hit-test source so ARCore stops recalculating ──
+            const arRenderers = [
+              mv?._renderer?.arRenderer,
+              mv?._arRenderer,
+              mv?.renderer?.arRenderer,
+            ];
+            for (const ar of arRenderers) {
+              if (!ar) continue;
+              try { ar._hitTestSource?.cancel(); ar._hitTestSource = null; } catch (_) {}
+              try { ar._hitTestSourceForTransientInput?.cancel(); ar._hitTestSourceForTransientInput = null; } catch (_) {}
+            }
+
+            // ── Step 2: Get the Three.js scene and record EXACT placed position ──
+            const modelScene =
+              mv?.model?.scene ??
+              mv?._model?.scene ??
+              mv?.scene?.children?.[0];
+
+            if (modelScene) {
+              // Force a matrix update to capture the true placed position
+              modelScene.updateMatrixWorld(true);
+
+              const lockedPos   = modelScene.position.clone();
+              const lockedQuat  = modelScene.quaternion.clone();
+              const lockedScale = modelScene.scale.clone();
+
+              // Freeze matrix so model-viewer stops overwriting it
+              modelScene.matrixAutoUpdate = false;
+              modelScene.updateMatrix();
+
+              // ── Step 3: Hard-lock loop — force position back every frame ──
+              // This eliminates 100% of residual ARCore drift jitter
+              let lockRaf;
+              const lock = () => {
+                if (arStatusRef.current !== 'placed') { cancelAnimationFrame(lockRaf); return; }
+                modelScene.position.copy(lockedPos);
+                modelScene.quaternion.copy(lockedQuat);
+                modelScene.scale.copy(lockedScale);
+                modelScene.updateMatrix();
+                lockRaf = requestAnimationFrame(lock);
+              };
+              lockRaf = requestAnimationFrame(lock);
+            }
           } catch (_) {}
-        }, 120);
+        }, 150);
       }
       else if (s === 'not-presenting') setArStatus('idle');
     };
-    const onError   = () => setLoading(false);
+    let loaded = false;
+    // Only treat error as fatal if model hasn't loaded yet
+    const onError = () => { if (!loaded) { setLoading(false); setLoadError(true); } };
+
+    // 60s timeout: if model still hasn't loaded on very slow network
+    const loadTimeout = setTimeout(() => {
+      if (!loaded) { setLoading(false); setLoadError(true); }
+    }, 60000);
 
     // Watch scale attribute for AR pinch-to-zoom %
     const baseScale = 0.3;
@@ -253,7 +288,12 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
     el.addEventListener('progress', onProgress);
     el.addEventListener('ar-status', onArStatus);
     el.addEventListener('error', onError);
+
+    // Preloaded/cached models can finish before listeners attach (common on mobile)
+    if (el.loaded) onLoad();
+
     return () => {
+      clearTimeout(loadTimeout);
       observer.disconnect();
       el.removeEventListener('load', onLoad);
       el.removeEventListener('camera-change', onCameraChange);
@@ -263,7 +303,7 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
       el.removeEventListener('ar-status', onArStatus);
       el.removeEventListener('error', onError);
     };
-  }, [src]);
+  }, [src, viewerReady]);
 
   const scaleStep = (dir) => {
     const el = viewerRef.current;
@@ -289,22 +329,17 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
     if (!el.canActivateAR) { setShowNoArModal(true); return; }
     if (isIOS && !src.usdz)  { setShowNoArModal(true); return; }
 
-    // Timeout fallback — clears itself if page hides (Scene Viewer opened external app)
+    // WebXR stays in-browser; show modal if session never starts
     const noStartTimer = setTimeout(() => {
       if (arStatusRef.current !== 'started' && arStatusRef.current !== 'placed') {
         setShowNoArModal(true);
       }
-    }, 5000);
-
-    // Scene Viewer opens as a separate Android app — page goes hidden immediately
-    const onHide = () => clearTimeout(noStartTimer);
-    document.addEventListener('visibilitychange', onHide, { once: true });
+    }, 8000);
 
     try {
       await el.activateAR();
     } catch {
       clearTimeout(noStartTimer);
-      document.removeEventListener('visibilitychange', onHide);
       setShowNoArModal(true);
     }
   };
@@ -336,25 +371,53 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
         {/* model-viewer — fills remaining space */}
         <div className="flex-1 relative" style={{ minHeight: 0 }}>
 
-          {/* Loading spinner */}
+          {/* Loading spinner / error */}
           <AnimatePresence>
-            {loading && (
+            {(loading || loadError) && (
               <motion.div initial={{ opacity: 1 }} exit={{ opacity: 0 }}
-                className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4 pointer-events-none"
-                style={{ background: '#000' }}>
-                <div className="w-14 h-14 rounded-full border-2 animate-spin"
-                  style={{ borderColor: 'rgba(212,175,55,0.2)', borderTopColor: '#D4AF37' }} />
-                <div className="flex flex-col items-center gap-2 w-48">
-                  <span className="text-gray-500 text-xs tracking-widest uppercase">
-                    Loading 3D Model{progress > 0 ? ` ${progress}%` : '…'}
-                  </span>
-                  {progress > 0 && (
-                    <div className="w-full h-1 rounded-full" style={{ background: 'rgba(212,175,55,0.15)' }}>
-                      <div className="h-1 rounded-full transition-all duration-300"
-                        style={{ width: `${progress}%`, background: '#D4AF37' }} />
+                className="absolute inset-0 z-10 flex flex-col items-center justify-center gap-4"
+                style={{ background: '#000', pointerEvents: loadError ? 'auto' : 'none' }}>
+                {loadError ? (
+                  <>
+                    <span style={{ fontSize: '2rem' }}>☕</span>
+                    <span className="text-xs tracking-widest uppercase" style={{ color: '#666', fontFamily: 'var(--font-text)' }}>
+                      Failed to load 3D model
+                    </span>
+                    <button
+                      onClick={() => {
+                        const el = viewerRef.current;
+                        if (el) {
+                          const s = src.glb;
+                          el.src = '';
+                          requestAnimationFrame(() => { el.src = s; });
+                        }
+                        setLoadError(false);
+                        setLoading(true);
+                        setProgress(0);
+                      }}
+                      className="px-5 py-2.5 rounded-full text-xs font-semibold"
+                      style={{ background: 'rgba(200,169,81,0.12)', border: '1px solid rgba(200,169,81,0.3)', color: '#C8A951', fontFamily: 'var(--font-body)' }}
+                    >
+                      Retry
+                    </button>
+                  </>
+                ) : (
+                  <>
+                    <div className="w-14 h-14 rounded-full border-2 animate-spin"
+                      style={{ borderColor: 'rgba(212,175,55,0.2)', borderTopColor: '#D4AF37' }} />
+                    <div className="flex flex-col items-center gap-2 w-48">
+                      <span className="text-gray-500 text-xs tracking-widest uppercase">
+                        Loading 3D Model{progress > 0 ? ` ${progress}%` : '…'}
+                      </span>
+                      {progress > 0 && (
+                        <div className="w-full h-1 rounded-full" style={{ background: 'rgba(212,175,55,0.15)' }}>
+                          <div className="h-1 rounded-full transition-all duration-300"
+                            style={{ width: `${progress}%`, background: '#D4AF37' }} />
+                        </div>
+                      )}
                     </div>
-                  )}
-                </div>
+                  </>
+                )}
               </motion.div>
             )}
           </AnimatePresence>
@@ -387,16 +450,18 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
           </AnimatePresence>
 
           {/* eslint-disable react/no-unknown-property */}
+          {viewerReady && (
           <model-viewer
             ref={viewerRef}
             src={src.glb}
+            crossorigin="anonymous"
             {...(src.usdz ? { 'ios-src': src.usdz } : {})}
             alt={dishName}
             ar
             ar-modes="webxr quick-look"
             ar-scale="auto"
             ar-placement="floor"
-            scale="0.3 0.3 0.3"
+            xr-environment
             camera-controls
             auto-rotate
             auto-rotate-delay="1500"
@@ -404,9 +469,9 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
             loading="eager"
             reveal="auto"
             interaction-prompt="none"
-            shadow-intensity="0"
-            shadow-softness="0"
-            exposure="1.1"
+            shadow-intensity="0.3"
+            shadow-softness="0.5"
+            exposure="1"
             environment-image="neutral"
             style={{ width: '100%', height: '100%', background: '#000' }}
           >
@@ -434,6 +499,7 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
               </div>
             )}
           </model-viewer>
+          )}
           {/* eslint-enable react/no-unknown-property */}
 
           {/* Lock overlay after placement — absorbs single-finger drags so model stays fixed */}

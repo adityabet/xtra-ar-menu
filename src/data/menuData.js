@@ -11,8 +11,8 @@ export const MODELS = {
   icedCoffee: { glb: '/models/iced-coffee.glb',  usdz: '/models/iced-coffee.glb.usdz' },
 };
 
-// All GLB URLs to preload silently on app boot
-export const ALL_MODEL_URLS = Object.values(MODELS).map((m) => m.glb);
+// All GLB URLs to preload silently on app boot (deduplicated)
+export const ALL_MODEL_URLS = [...new Set(Object.values(MODELS).map((m) => m.glb))];
 
 export const categories = [
   {
