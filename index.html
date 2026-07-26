@@ -15,8 +15,14 @@
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=Poppins:wght@400;500;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet" />
 
-    <!-- model-viewer v4.0 — XRAnchor support for stable surface AR -->
-    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/4.0.0/model-viewer.min.js"></script>
+    <!-- Draco decoder — self-hosted, no external dependency -->
+    <script>
+      window.ModelViewerElement = window.ModelViewerElement || {};
+      window.ModelViewerElement.dracoDecoderLocation = '/draco/';
+    </script>
+
+    <!-- model-viewer v3.5.0 — stable WebXR surface AR -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
 
     <!-- Preload all 3D models immediately on HTML parse — zero wait when AR opens -->
     <link rel="preload" as="fetch" href="/models/pizza.glb"       crossorigin="anonymous" />

@@ -184,6 +184,7 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
     const onLoad = () => {
       loaded = true;
       clearTimeout(loadTimeout);
+      clearTimeout(errorTimer);
       setLoading(false);
       setLoadError(false);
       setProgress(100);
@@ -258,15 +259,24 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
               lockRaf = requestAnimationFrame(lock);
             }
           } catch (_) {}
-        }, 150);
+        }, 350);
       }
       else if (s === 'not-presenting') setArStatus('idle');
     };
     let loaded = false;
-    // Only treat error as fatal if model hasn't loaded yet
-    const onError = () => { if (!loaded) { setLoading(false); setLoadError(true); } };
+    let errorTimer = null;
+    // Defer error UI by 3s — if load fires in between, error is ignored
+    // This handles non-fatal texture errors that fire before the load event
+    const onError = () => {
+      if (!loaded) {
+        clearTimeout(errorTimer);
+        errorTimer = setTimeout(() => {
+          if (!loaded) { setLoading(false); setLoadError(true); }
+        }, 3000);
+      }
+    };
 
-    // 60s timeout: if model still hasn't loaded on very slow network
+    // 60s hard timeout for truly broken networks
     const loadTimeout = setTimeout(() => {
       if (!loaded) { setLoading(false); setLoadError(true); }
     }, 60000);
@@ -294,6 +304,7 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
 
     return () => {
       clearTimeout(loadTimeout);
+      clearTimeout(errorTimer);
       observer.disconnect();
       el.removeEventListener('load', onLoad);
       el.removeEventListener('camera-change', onCameraChange);
@@ -458,8 +469,8 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
             {...(src.usdz ? { 'ios-src': src.usdz } : {})}
             alt={dishName}
             ar
-            ar-modes="webxr quick-look"
-            ar-scale="auto"
+            ar-modes="webxr"
+            ar-scale="fixed"
             ar-placement="floor"
             xr-environment
             camera-controls
