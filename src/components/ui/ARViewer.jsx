@@ -340,17 +340,23 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
     if (!el.canActivateAR) { setShowNoArModal(true); return; }
     if (isIOS && !src.usdz)  { setShowNoArModal(true); return; }
 
-    // WebXR stays in-browser; show modal if session never starts
-    const noStartTimer = setTimeout(() => {
-      if (arStatusRef.current !== 'started' && arStatusRef.current !== 'placed') {
-        setShowNoArModal(true);
-      }
-    }, 8000);
+    // iOS Quick Look operates outside the browser — it never fires
+    // model-viewer ar-status events, so a timeout-based fallback would
+    // falsely trigger "AR Not Supported" while Quick Look is active.
+    // Only set the safety timer on Android (WebXR fires ar-status events).
+    let noStartTimer = null;
+    if (!isIOS) {
+      noStartTimer = setTimeout(() => {
+        if (arStatusRef.current !== 'started' && arStatusRef.current !== 'placed') {
+          setShowNoArModal(true);
+        }
+      }, 8000);
+    }
 
     try {
       await el.activateAR();
     } catch {
-      clearTimeout(noStartTimer);
+      if (noStartTimer) clearTimeout(noStartTimer);
       setShowNoArModal(true);
     }
   };
