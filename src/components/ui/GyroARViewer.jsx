@@ -162,7 +162,7 @@ export default function GyroARViewer({ src, dishName, onClose }) {
       {/* ── Header ── */}
       <div className="absolute top-0 left-0 right-0 flex items-center justify-between px-4 h-14 z-20">
         <div className="flex items-center gap-2">
-          <Cuboid size={16} color="#C8A951" />
+          <Cuboid size={16} color="#A93A46" />
           <span className="text-white font-semibold text-sm truncate max-w-[200px]"
             style={{ fontFamily: 'var(--font-body)' }}>{dishName}</span>
         </div>
@@ -180,7 +180,7 @@ export default function GyroARViewer({ src, dishName, onClose }) {
             className="absolute inset-0 z-40 flex flex-col items-center justify-center gap-4"
             style={{ background: '#000' }}>
             <div className="w-12 h-12 rounded-full border-2 animate-spin"
-              style={{ borderColor: 'rgba(200,169,81,0.2)', borderTopColor: '#C8A951' }} />
+              style={{ borderColor: 'rgba(169,58,70,0.2)', borderTopColor: '#A93A46' }} />
             <span className="text-white text-sm" style={{ fontFamily: 'var(--font-body)' }}>
               Starting camera…
             </span>
@@ -204,7 +204,7 @@ export default function GyroARViewer({ src, dishName, onClose }) {
             </div>
             <button onClick={requestGyro}
               className="px-8 py-3.5 rounded-2xl font-bold text-sm"
-              style={{ background: 'linear-gradient(135deg,#C8A951,#E8C96A)', color: '#1A0F00', fontFamily: 'var(--font-body)' }}>
+              style={{ background: 'linear-gradient(135deg,#A93A46,#C4555F)', color: '#FFFFFF', fontFamily: 'var(--font-body)' }}>
               Allow Access
             </button>
           </motion.div>
@@ -219,7 +219,7 @@ export default function GyroARViewer({ src, dishName, onClose }) {
             Camera access denied. Please allow camera and reload.
           </p>
           <button onClick={onClose} className="px-6 py-3 rounded-2xl text-sm font-semibold"
-            style={{ background: 'rgba(200,169,81,0.2)', color: '#C8A951', border: '1px solid rgba(200,169,81,0.3)' }}>
+            style={{ background: 'rgba(169,58,70,0.2)', color: '#A93A46', border: '1px solid rgba(169,58,70,0.3)' }}>
             Close
           </button>
         </div>
@@ -283,7 +283,7 @@ export default function GyroARViewer({ src, dishName, onClose }) {
           <motion.div initial={{ opacity: 1 }} exit={{ opacity: 0 }}
             className="absolute inset-0 z-25 flex items-center justify-center pointer-events-none">
             <div className="w-10 h-10 rounded-full border-2 animate-spin"
-              style={{ borderColor: 'rgba(200,169,81,0.2)', borderTopColor: '#C8A951' }} />
+              style={{ borderColor: 'rgba(169,58,70,0.2)', borderTopColor: '#A93A46' }} />
           </motion.div>
         )}
       </AnimatePresence>
@@ -307,7 +307,7 @@ export default function GyroARViewer({ src, dishName, onClose }) {
                 width: modelPos.size * 1.25,
                 height: modelPos.size * 0.35,
                 transform: 'translate(-50%, 30%)',
-                border: '1.5px solid rgba(200,169,81,0.55)',
+                border: '1.5px solid rgba(169,58,70,0.55)',
                 borderRadius: '50%',
               }}
             />
@@ -319,7 +319,7 @@ export default function GyroARViewer({ src, dishName, onClose }) {
               className="absolute bottom-12 left-0 right-0 flex flex-col items-center gap-2 pointer-events-none"
             >
               <div className="flex flex-col items-center gap-1 px-5 py-3 rounded-2xl"
-                style={{ background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(10px)', border: '1px solid rgba(200,169,81,0.25)' }}>
+                style={{ background: 'rgba(0,0,0,0.65)', backdropFilter: 'blur(10px)', border: '1px solid rgba(169,58,70,0.25)' }}>
                 <span className="text-white text-sm font-bold"
                   style={{ fontFamily: 'var(--font-body)', textShadow: '0 2px 8px rgba(0,0,0,0.8)' }}>
                   Tilt phone at your table, then tap
@@ -345,11 +345,11 @@ export default function GyroARViewer({ src, dishName, onClose }) {
               className="flex items-center gap-2 px-5 py-2.5 rounded-full"
               style={{
                 background: 'rgba(0,0,0,0.65)',
-                border: '1px solid rgba(200,169,81,0.35)',
+                border: '1px solid rgba(169,58,70,0.35)',
                 backdropFilter: 'blur(10px)',
               }}
             >
-              <Lock size={13} color="#C8A951" />
+              <Lock size={13} color="#A93A46" />
               <span className="text-xs font-semibold" style={{ color: 'rgba(255,255,255,0.8)', fontFamily: 'var(--font-text)' }}>
                 Placed on table · Tap to reposition
               </span>
@@ -370,8 +370,8 @@ export default function GyroARViewer({ src, dishName, onClose }) {
             <div key={i} className="absolute" style={{
               ...pos, width: 26, height: 26,
               transform: `rotate(${pos.rotate}deg)`,
-              borderTop: '2px solid rgba(200,169,81,0.55)',
-              borderLeft: '2px solid rgba(200,169,81,0.55)',
+              borderTop: '2px solid rgba(169,58,70,0.55)',
+              borderLeft: '2px solid rgba(169,58,70,0.55)',
               borderRadius: '2px 0 0 0',
             }} />
           ))}

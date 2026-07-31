@@ -53,14 +53,14 @@ export default function CategoryPage() {
         <div
           className="px-4 pt-6 pb-5"
           style={{
-            background: 'linear-gradient(180deg, rgba(200,169,81,0.08) 0%, transparent 100%)',
+            background: 'linear-gradient(180deg, rgba(169,58,70,0.08) 0%, transparent 100%)',
             borderBottom: '1px solid var(--border)',
           }}
         >
           <div className="flex items-center gap-3">
             <div
               className="w-12 h-12 rounded-xl flex items-center justify-center text-2xl flex-shrink-0"
-              style={{ background: 'rgba(200,169,81,0.12)', border: '1px solid rgba(200,169,81,0.28)' }}
+              style={{ background: 'rgba(169,58,70,0.12)', border: '1px solid rgba(169,58,70,0.28)' }}
             >
               {category.emoji}
             </div>
@@ -90,7 +90,7 @@ export default function CategoryPage() {
                   <motion.div
                     animate={{
                       width: i === activeIndex ? 28 : 8,
-                      background: i === activeIndex ? '#C8A951' : 'rgba(0,0,0,0.15)',
+                      background: i === activeIndex ? '#A93A46' : 'rgba(0,0,0,0.15)',
                     }}
                     transition={{ type: 'spring', stiffness: 300, damping: 30 }}
                     className="h-2 rounded-full"
@@ -107,7 +107,7 @@ export default function CategoryPage() {
                 {activeIndex > 0 ? '← ' + subs[activeIndex - 1].name : ''}
               </span>
               <div className="text-center">
-                <span className="text-sm font-bold" style={{ color: '#C8A951', fontFamily: 'var(--font-body)', fontWeight: 600 }}>
+                <span className="text-sm font-bold" style={{ color: '#A93A46', fontFamily: 'var(--font-body)', fontWeight: 600 }}>
                   {activeSub.type === 'veg' ? '🌿 ' : activeSub.type === 'non-veg' ? '🍗 ' : activeSub.type === 'mocktail' ? '🍹 ' : '☕ '}
                   {activeSub.name}
                 </span>

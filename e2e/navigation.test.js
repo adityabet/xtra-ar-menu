@@ -2,9 +2,9 @@ import { test, expect } from '@playwright/test';
 
 // ── Home page ─────────────────────────────────────────────────────────────────
 test.describe('Home Page', () => {
-  test('loads and shows XTRA branding', async ({ page }) => {
+  test('loads and shows MenuVista branding', async ({ page }) => {
     await page.goto('/');
-    await expect(page).toHaveTitle(/XTRA/i);
+    await expect(page).toHaveTitle(/MenuVista/i);
   });
 
   test('has a link to the menu', async ({ page }) => {

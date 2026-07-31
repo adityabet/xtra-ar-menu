@@ -15,13 +15,13 @@ function ArNotSupportedModal({ onClose }) {
         initial={{ y: 80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 80, opacity: 0 }}
         transition={{ type: 'spring', stiffness: 260, damping: 28 }}
         className="w-full max-w-md rounded-t-3xl pb-10 px-5 pt-5"
-        style={{ background: '#111', border: '1px solid rgba(200,169,81,0.2)' }}
+        style={{ background: '#111', border: '1px solid rgba(169,58,70,0.2)' }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="w-10 h-1 rounded-full mx-auto mb-5" style={{ background: 'rgba(255,255,255,0.15)' }} />
         <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
-          style={{ background: 'rgba(200,169,81,0.10)', border: '1px solid rgba(200,169,81,0.25)' }}>
-          <Smartphone size={30} color="#C8A951" />
+          style={{ background: 'rgba(169,58,70,0.10)', border: '1px solid rgba(169,58,70,0.25)' }}>
+          <Smartphone size={30} color="#A93A46" />
         </div>
         <h2 className="text-white text-lg font-bold text-center mb-1" style={{ fontFamily: 'var(--font-body)' }}>
           AR Not Supported
@@ -31,7 +31,7 @@ function ArNotSupportedModal({ onClose }) {
         </p>
         <div className="rounded-2xl overflow-hidden mb-4" style={{ border: '1px solid rgba(255,255,255,0.06)' }}>
           <div className="px-4 py-3" style={{ background: 'rgba(255,255,255,0.04)', borderBottom: '1px solid rgba(255,255,255,0.06)' }}>
-            <p className="text-[10px] font-semibold tracking-widest uppercase mb-2" style={{ color: '#C8A951' }}>🤖 Android</p>
+            <p className="text-[10px] font-semibold tracking-widest uppercase mb-2" style={{ color: '#A93A46' }}>🤖 Android</p>
             {[
               [<Smartphone size={11} />, 'Android 8.0+'],
               [<Cpu size={11} />, 'ARCore device (Snapdragon 660+ / Dimensity 700+)'],
@@ -39,27 +39,27 @@ function ArNotSupportedModal({ onClose }) {
               [<Globe size={11} />, 'Chrome on HTTPS'],
             ].map(([icon, text], i) => (
               <div key={i} className="flex items-start gap-2 mb-1">
-                <span style={{ color: '#C8A951', marginTop: 1 }}>{icon}</span>
+                <span style={{ color: '#A93A46', marginTop: 1 }}>{icon}</span>
                 <span className="text-xs" style={{ color: '#888', fontFamily: 'var(--font-text)' }}>{text}</span>
               </div>
             ))}
           </div>
           <div className="px-4 py-3">
-            <p className="text-[10px] font-semibold tracking-widest uppercase mb-2" style={{ color: '#C8A951' }}> iOS</p>
+            <p className="text-[10px] font-semibold tracking-widest uppercase mb-2" style={{ color: '#A93A46' }}> iOS</p>
             {[
               [<Smartphone size={11} />, 'iPhone 6s or later'],
               [<Cpu size={11} />, 'A9 chip (ARKit)'],
               [<Globe size={11} />, 'Safari on HTTPS'],
             ].map(([icon, text], i) => (
               <div key={i} className="flex items-start gap-2 mb-1">
-                <span style={{ color: '#C8A951', marginTop: 1 }}>{icon}</span>
+                <span style={{ color: '#A93A46', marginTop: 1 }}>{icon}</span>
                 <span className="text-xs" style={{ color: '#888', fontFamily: 'var(--font-text)' }}>{text}</span>
               </div>
             ))}
           </div>
         </div>
         <button onClick={onClose} className="w-full py-3.5 rounded-2xl text-sm font-semibold"
-          style={{ background: 'rgba(200,169,81,0.12)', border: '1px solid rgba(200,169,81,0.25)', color: '#C8A951', fontFamily: 'var(--font-body)' }}>
+          style={{ background: 'rgba(169,58,70,0.12)', border: '1px solid rgba(169,58,70,0.25)', color: '#A93A46', fontFamily: 'var(--font-body)' }}>
           Got it
         </button>
       </motion.div>
@@ -80,31 +80,31 @@ function SafariRequiredModal({ onClose }) {
         initial={{ y: 80, opacity: 0 }} animate={{ y: 0, opacity: 1 }} exit={{ y: 80, opacity: 0 }}
         transition={{ type: 'spring', stiffness: 260, damping: 28 }}
         className="w-full max-w-md rounded-t-3xl pb-10 px-5 pt-5"
-        style={{ background: '#111', border: '1px solid rgba(200,169,81,0.2)' }}
+        style={{ background: '#111', border: '1px solid rgba(169,58,70,0.2)' }}
         onClick={(e) => e.stopPropagation()}
       >
         <div className="w-10 h-1 rounded-full mx-auto mb-5" style={{ background: 'rgba(255,255,255,0.15)' }} />
         <div className="w-16 h-16 rounded-2xl flex items-center justify-center mx-auto mb-4"
-          style={{ background: 'rgba(200,169,81,0.10)', border: '1px solid rgba(200,169,81,0.25)' }}>
+          style={{ background: 'rgba(169,58,70,0.10)', border: '1px solid rgba(169,58,70,0.25)' }}>
           <span className="text-4xl">🧭</span>
         </div>
         <h2 className="text-white text-lg font-bold text-center mb-1" style={{ fontFamily: 'var(--font-body)' }}>
           Open in Safari
         </h2>
         <p className="text-center text-sm mb-5" style={{ color: '#999', fontFamily: 'var(--font-text)', lineHeight: 1.6 }}>
-          AR on iPhone only works in <span style={{ color: '#C8A951', fontWeight: 600 }}>Safari</span>.{'\n'}
+          AR on iPhone only works in <span style={{ color: '#A93A46', fontWeight: 600 }}>Safari</span>.{'\n'}
           Please open this page in Safari to view dishes in AR.
         </p>
         <div className="rounded-2xl px-4 py-3 mb-4 flex items-start gap-3"
-          style={{ background: 'rgba(200,169,81,0.08)', border: '1px solid rgba(200,169,81,0.2)' }}>
+          style={{ background: 'rgba(169,58,70,0.08)', border: '1px solid rgba(169,58,70,0.2)' }}>
           <span className="text-xl mt-0.5">💡</span>
           <span className="text-xs" style={{ color: '#aaa', fontFamily: 'var(--font-text)', lineHeight: 1.6 }}>
-            Tap the <span style={{ color: '#C8A951' }}>Share button</span> in your browser → select{' '}
-            <span style={{ color: '#C8A951' }}>"Open in Safari"</span>
+            Tap the <span style={{ color: '#A93A46' }}>Share button</span> in your browser → select{' '}
+            <span style={{ color: '#A93A46' }}>"Open in Safari"</span>
           </span>
         </div>
         <button onClick={onClose} className="w-full py-3.5 rounded-2xl text-sm font-semibold"
-          style={{ background: 'rgba(200,169,81,0.12)', border: '1px solid rgba(200,169,81,0.25)', color: '#C8A951', fontFamily: 'var(--font-body)' }}>
+          style={{ background: 'rgba(169,58,70,0.12)', border: '1px solid rgba(169,58,70,0.25)', color: '#A93A46', fontFamily: 'var(--font-body)' }}>
           Got it
         </button>
       </motion.div>
@@ -371,9 +371,9 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
         {/* Header */}
         {!arActive && (
           <div className="flex items-center justify-between px-4 h-14 flex-shrink-0"
-            style={{ borderBottom: '1px solid rgba(212,175,55,0.1)', background: '#000' }}>
+            style={{ borderBottom: '1px solid rgba(169,58,70,0.1)', background: '#000' }}>
             <div className="flex items-center gap-2">
-              <Cuboid size={16} color="#C8A951" />
+              <Cuboid size={16} color="#A93A46" />
               <span className="text-white font-semibold text-sm truncate max-w-[200px]"
                 style={{ fontFamily: 'var(--font-body)' }}>{dishName}</span>
             </div>
@@ -413,7 +413,7 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
                         setProgress(0);
                       }}
                       className="px-5 py-2.5 rounded-full text-xs font-semibold"
-                      style={{ background: 'rgba(200,169,81,0.12)', border: '1px solid rgba(200,169,81,0.3)', color: '#C8A951', fontFamily: 'var(--font-body)' }}
+                      style={{ background: 'rgba(169,58,70,0.12)', border: '1px solid rgba(169,58,70,0.3)', color: '#A93A46', fontFamily: 'var(--font-body)' }}
                     >
                       Retry
                     </button>
@@ -421,15 +421,15 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
                 ) : (
                   <>
                     <div className="w-14 h-14 rounded-full border-2 animate-spin"
-                      style={{ borderColor: 'rgba(212,175,55,0.2)', borderTopColor: '#D4AF37' }} />
+                      style={{ borderColor: 'rgba(169,58,70,0.2)', borderTopColor: '#C4555F' }} />
                     <div className="flex flex-col items-center gap-2 w-48">
                       <span className="text-gray-500 text-xs tracking-widest uppercase">
                         Loading 3D Model{progress > 0 ? ` ${progress}%` : '…'}
                       </span>
                       {progress > 0 && (
-                        <div className="w-full h-1 rounded-full" style={{ background: 'rgba(212,175,55,0.15)' }}>
+                        <div className="w-full h-1 rounded-full" style={{ background: 'rgba(169,58,70,0.15)' }}>
                           <div className="h-1 rounded-full transition-all duration-300"
-                            style={{ width: `${progress}%`, background: '#D4AF37' }} />
+                            style={{ width: `${progress}%`, background: '#C4555F' }} />
                         </div>
                       )}
                     </div>
@@ -459,7 +459,7 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
                 className="absolute top-4 left-0 right-0 flex justify-center pointer-events-none z-10"
               >
                 <span className="text-sm font-bold px-4 py-1.5 rounded-full"
-                  style={{ background: 'rgba(0,0,0,0.72)', color: '#D4AF37', fontFamily: 'var(--font-body)', letterSpacing: '0.05em' }}>
+                  style={{ background: 'rgba(0,0,0,0.72)', color: '#C4555F', fontFamily: 'var(--font-body)', letterSpacing: '0.05em' }}>
                   {zoomPct}%
                 </span>
               </motion.div>
@@ -500,7 +500,7 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
                 data-normal="0m 0m 1m"
                 style={{
                   background: 'rgba(0,0,0,0.75)',
-                  color: '#D4AF37',
+                  color: '#C4555F',
                   fontFamily: 'var(--font-body)',
                   fontWeight: 700,
                   fontSize: '15px',
@@ -509,7 +509,7 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
                   borderRadius: '999px',
                   whiteSpace: 'nowrap',
                   pointerEvents: 'none',
-                  border: '1px solid rgba(212,175,55,0.4)',
+                  border: '1px solid rgba(169,58,70,0.4)',
                 }}
               >
                 {arZoomPct}%
@@ -541,9 +541,9 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
                 {/* pulsing hand icon */}
                 <div className="relative w-20 h-20 flex items-center justify-center">
                   <div className="absolute inset-0 rounded-full animate-ping"
-                    style={{ background: 'rgba(212,175,55,0.35)' }} />
+                    style={{ background: 'rgba(169,58,70,0.35)' }} />
                   <div className="absolute inset-2 rounded-full animate-ping"
-                    style={{ background: 'rgba(212,175,55,0.2)', animationDelay: '0.3s' }} />
+                    style={{ background: 'rgba(169,58,70,0.2)', animationDelay: '0.3s' }} />
                   <span className="text-4xl relative z-10">👆</span>
                 </div>
                 <div className="flex flex-col items-center gap-1">
@@ -563,14 +563,14 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
 
         {/* Ingredients — collapsible */}
         {!arActive && ingredients?.length > 0 && (
-          <div className="flex-shrink-0" style={{ background: '#0a0a0a', borderTop: '1px solid rgba(212,175,55,0.12)' }}>
+          <div className="flex-shrink-0" style={{ background: '#0a0a0a', borderTop: '1px solid rgba(169,58,70,0.12)' }}>
             <button
               onClick={() => setIngOpen(o => !o)}
               className="w-full flex items-center justify-between px-4 py-2.5"
             >
               <span className="text-[11px] font-semibold tracking-widest uppercase"
-                style={{ color: '#C8A951', fontFamily: 'var(--font-body)' }}>✦ Ingredients</span>
-              {ingOpen ? <ChevronDown size={14} color="#C8A951" /> : <ChevronUp size={14} color="#C8A951" />}
+                style={{ color: '#A93A46', fontFamily: 'var(--font-body)' }}>✦ Ingredients</span>
+              {ingOpen ? <ChevronDown size={14} color="#A93A46" /> : <ChevronUp size={14} color="#A93A46" />}
             </button>
             <AnimatePresence>
               {ingOpen && (
@@ -582,7 +582,7 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
                   <div className="flex flex-wrap gap-1.5">
                     {ingredients.map(ing => (
                       <span key={ing} className="text-[11px] px-2.5 py-1 rounded-full"
-                        style={{ background: 'rgba(212,175,55,0.1)', border: '1px solid rgba(212,175,55,0.22)', color: '#bbb', fontFamily: 'var(--font-text)' }}>
+                        style={{ background: 'rgba(169,58,70,0.1)', border: '1px solid rgba(169,58,70,0.22)', color: '#bbb', fontFamily: 'var(--font-text)' }}>
                         {ing}
                       </span>
                     ))}
@@ -596,35 +596,35 @@ export default function ARViewer({ src, dishName, ingredients, onClose }) {
         {/* Size adjust + AR Button */}
         {!arActive && (
           <div className="flex-shrink-0 px-4 pb-8 pt-3 flex flex-col gap-3"
-            style={{ background: '#000', borderTop: '1px solid rgba(212,175,55,0.1)' }}>
+            style={{ background: '#000', borderTop: '1px solid rgba(169,58,70,0.1)' }}>
 
             {/* Pre-AR size control */}
             <div className="flex items-center justify-between px-1">
-              <span className="text-[11px] tracking-widest uppercase" style={{ color: '#C8A951', fontFamily: 'var(--font-body)' }}>
+              <span className="text-[11px] tracking-widest uppercase" style={{ color: '#A93A46', fontFamily: 'var(--font-body)' }}>
                 Dish Size in AR
               </span>
               <div className="flex items-center gap-2">
                 <button onPointerDown={() => scaleStep('out')}
                   className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xl font-bold active:scale-90"
-                  style={{ background: 'rgba(200,169,81,0.12)', border: '1px solid rgba(200,169,81,0.3)' }}>−</button>
+                  style={{ background: 'rgba(169,58,70,0.12)', border: '1px solid rgba(169,58,70,0.3)' }}>−</button>
                 <span className="text-xs w-8 text-center" style={{ color: '#888', fontFamily: 'var(--font-text)' }}>
                   {Math.round(scaleVal / 0.3 * 100)}%
                 </span>
                 <button onPointerDown={() => scaleStep('in')}
                   className="w-9 h-9 rounded-full flex items-center justify-center text-white text-xl font-bold active:scale-90"
-                  style={{ background: 'rgba(200,169,81,0.12)', border: '1px solid rgba(200,169,81,0.3)' }}>+</button>
+                  style={{ background: 'rgba(169,58,70,0.12)', border: '1px solid rgba(169,58,70,0.3)' }}>+</button>
               </div>
             </div>
 
             <motion.button
               whileTap={{ scale: 0.96 }} onClick={handleArTap}
               className="w-full py-4 rounded-2xl font-bold text-black text-sm tracking-widest uppercase flex items-center justify-center gap-2"
-              style={{ background: 'linear-gradient(135deg,#D4AF37 0%,#F0D060 50%,#A0842A 100%)', fontFamily: 'var(--font-body)' }}>
+              style={{ background: 'linear-gradient(135deg,#C4555F 0%,#C4555F 50%,#8B2635 100%)', fontFamily: 'var(--font-body)' }}>
               <Cuboid size={18} />
               View in AR
             </motion.button>
             <p className="text-gray-600 text-[11px] text-center" style={{ fontFamily: 'var(--font-text)' }}>
-              Set size above → point camera at the <span style={{ color: '#C8A951' }}>floor</span> to place
+              Set size above → point camera at the <span style={{ color: '#A93A46' }}>floor</span> to place
             </p>
           </div>
         )}

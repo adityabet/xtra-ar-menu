@@ -27,7 +27,7 @@ export default class ErrorBoundary extends Component {
           }}
         >
           <div style={{ fontSize: '2.5rem' }}>☕</div>
-          <div style={{ color: '#C8A951', fontFamily: 'system-ui', fontWeight: 700, fontSize: '1.1rem' }}>
+          <div style={{ color: '#A93A46', fontFamily: 'system-ui', fontWeight: 700, fontSize: '1.1rem' }}>
             Something went wrong
           </div>
           <div style={{ color: '#666', fontFamily: 'system-ui', fontSize: '0.85rem', lineHeight: 1.6 }}>
@@ -39,9 +39,9 @@ export default class ErrorBoundary extends Component {
               marginTop: '8px',
               padding: '12px 28px',
               borderRadius: '999px',
-              background: 'rgba(200,169,81,0.12)',
-              border: '1px solid rgba(200,169,81,0.3)',
-              color: '#C8A951',
+              background: 'rgba(169,58,70,0.12)',
+              border: '1px solid rgba(169,58,70,0.3)',
+              color: '#A93A46',
               fontFamily: 'system-ui',
               fontWeight: 600,
               fontSize: '0.875rem',

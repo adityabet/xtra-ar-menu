@@ -62,7 +62,7 @@ export default function DishDetailPage() {
         {dish.isChefRecommended && (
           <div
             className="absolute top-4 right-4 flex items-center gap-1.5 px-2.5 py-1 rounded-full text-[11px] font-semibold"
-            style={{ background: 'rgba(200,169,81,0.92)', color: '#1A0F00' }}
+            style={{ background: 'rgba(169,58,70,0.92)', color: '#FFFFFF' }}
           >
             <Star size={10} fill="currentColor" />
             Chef's Pick
@@ -74,9 +74,9 @@ export default function DishDetailPage() {
           <span
             className="text-[10px] px-2 py-1 rounded-full uppercase tracking-widest"
             style={{
-              background: 'rgba(200,169,81,0.18)',
-              border: '1px solid rgba(200,169,81,0.35)',
-              color: '#C8A951',
+              background: 'rgba(169,58,70,0.18)',
+              border: '1px solid rgba(169,58,70,0.35)',
+              color: '#A93A46',
               fontFamily: 'system-ui, sans-serif',
             }}
           >
@@ -86,7 +86,7 @@ export default function DishDetailPage() {
 
         {/* Price */}
         <div className="absolute bottom-4 right-4">
-          <span style={{ fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: '1.125rem', color: '#C8A951' }}>₹{dish.price}</span>
+          <span style={{ fontFamily: 'var(--font-body)', fontWeight: 700, fontSize: '1.125rem', color: '#A93A46' }}>₹{dish.price}</span>
         </div>
       </div>
 
@@ -116,7 +116,7 @@ export default function DishDetailPage() {
           className="flex items-center gap-4 mb-5"
         >
           <div className="flex items-center gap-1.5 text-sm" style={{ color: 'var(--text-muted)', fontFamily: 'system-ui, sans-serif' }}>
-            <Clock size={13} color="#C8A951" />
+            <Clock size={13} color="#A93A46" />
             {dish.prepTime}
           </div>
           <div className="w-px h-4" style={{ background: 'var(--border)' }} />
@@ -145,7 +145,7 @@ export default function DishDetailPage() {
           className="mb-6"
         >
           <div className="flex items-center gap-2 mb-3">
-            <ChefHat size={14} color="#C8A951" />
+            <ChefHat size={14} color="#A93A46" />
             <span
               className="font-semibold text-sm"
               style={{ fontFamily: 'system-ui, sans-serif', color: 'var(--text)' }}
@@ -160,8 +160,8 @@ export default function DishDetailPage() {
                 className="text-xs px-3 py-1.5 rounded-full"
                 style={{
                   fontFamily: 'system-ui, sans-serif',
-                  background: 'rgba(200,169,81,0.10)',
-                  border: '1px solid rgba(200,169,81,0.22)',
+                  background: 'rgba(169,58,70,0.10)',
+                  border: '1px solid rgba(169,58,70,0.22)',
                   color: 'var(--text-muted)',
                 }}
               >
@@ -178,15 +178,15 @@ export default function DishDetailPage() {
           transition={{ delay: 0.2 }}
           className="rounded-2xl p-4"
           style={{
-            background: 'rgba(200,169,81,0.07)',
-            border: '1px solid rgba(200,169,81,0.20)',
+            background: 'rgba(169,58,70,0.07)',
+            border: '1px solid rgba(169,58,70,0.20)',
           }}
         >
           <div className="flex items-center gap-2 mb-1">
-            <Cuboid size={14} color="#C8A951" />
+            <Cuboid size={14} color="#A93A46" />
             <span
               className="font-semibold text-sm"
-              style={{ fontFamily: 'system-ui, sans-serif', color: '#C8A951' }}
+              style={{ fontFamily: 'system-ui, sans-serif', color: '#A93A46' }}
             >
               View in Augmented Reality
             </span>
@@ -216,8 +216,8 @@ export default function DishDetailPage() {
           className="w-full py-4 rounded-2xl font-bold text-sm tracking-widest uppercase flex items-center justify-center gap-2"
           style={{
             fontFamily: 'system-ui, sans-serif',
-            background: 'linear-gradient(135deg, #C8A951 0%, #E8C96A 50%, #9A7A35 100%)',
-            color: '#1A0F00',
+            background: 'linear-gradient(135deg, #A93A46 0%, #C4555F 50%, #8B2635 100%)',
+            color: '#FFFFFF',
           }}
         >
           <Cuboid size={18} />

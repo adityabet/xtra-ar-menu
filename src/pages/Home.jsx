@@ -25,14 +25,14 @@ export default function Home() {
         <div
           className="relative px-4 pt-8 pb-7 text-center overflow-hidden"
           style={{
-            background: 'linear-gradient(180deg, rgba(200,169,81,0.10) 0%, transparent 100%)',
+            background: 'linear-gradient(180deg, rgba(169,58,70,0.10) 0%, transparent 100%)',
             borderBottom: '1px solid var(--border)',
           }}
         >
           {/* Ambient glow */}
           <div
             className="absolute top-0 left-1/2 -translate-x-1/2 w-64 h-32 pointer-events-none"
-            style={{ background: 'radial-gradient(ellipse, rgba(200,169,81,0.12) 0%, transparent 70%)' }}
+            style={{ background: 'radial-gradient(ellipse, rgba(169,58,70,0.12) 0%, transparent 70%)' }}
           />
 
           <motion.div
@@ -41,7 +41,7 @@ export default function Home() {
             transition={{ duration: 0.6 }}
           >
             <div className="shimmer-gold text-3xl font-bold tracking-widest mb-0.5">
-              XTRA
+              MenuVista
             </div>
             <div
               className="text-[10px] tracking-[0.4em] uppercase mb-5"
@@ -56,8 +56,8 @@ export default function Home() {
               style={{ fontFamily: 'system-ui, sans-serif', color: 'var(--text-muted)' }}
             >
               <span className="flex items-center gap-1">
-                <Star size={10} color="#C8A951" fill="#C8A951" />
-                <span className="font-bold" style={{ color: '#C8A951' }}>5.0</span> Rating
+                <Star size={10} color="#A93A46" fill="#A93A46" />
+                <span className="font-bold" style={{ color: '#A93A46' }}>5.0</span> Rating
               </span>
               <span className="w-px h-3" style={{ background: 'var(--border)' }} />
               <a
@@ -65,7 +65,7 @@ export default function Home() {
                 target="_blank" rel="noopener noreferrer"
                 className="flex items-center gap-1" style={{ color: 'inherit' }}
               >
-                <MapPin size={10} color="#C8A951" />
+                <MapPin size={10} color="#A93A46" />
                 Navale Bridge, Pune
               </a>
             </div>
@@ -76,7 +76,7 @@ export default function Home() {
                 href="https://www.google.com/maps/place/XTRA+rooftop+lounge+and+cafe/@18.4570496,73.8290636,15z/data=!4m8!3m7!1s0x3bc295433ca3e84f:0x811fb9aa9edd7356!8m2!3d18.4569346!4d73.8290186!9m1!1b1!16s%2Fg%2F11njzjrrhm!18m1!1e1?entry=ttu&g_ep=EgoyMDI2MDYxNi4wIKXMDSoASAFQAw%3D%3D"
                 target="_blank" rel="noopener noreferrer"
                 className="flex items-center gap-1.5 px-4 py-2 rounded-full text-[12px] font-semibold active:scale-95 transition-transform"
-                style={{ background: 'rgba(200,169,81,0.13)', border: '1px solid rgba(200,169,81,0.3)', color: '#C8A951', fontFamily: 'var(--font-body)' }}
+                style={{ background: 'rgba(169,58,70,0.13)', border: '1px solid rgba(169,58,70,0.3)', color: '#A93A46', fontFamily: 'var(--font-body)' }}
               >
                 <MessageSquare size={13} />
                 Rate Us on Google
@@ -87,9 +87,9 @@ export default function Home() {
             <div
               className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full text-[11px]"
               style={{
-                background: 'rgba(200,169,81,0.10)',
-                border: '1px solid rgba(200,169,81,0.25)',
-                color: '#C8A951',
+                background: 'rgba(169,58,70,0.10)',
+                border: '1px solid rgba(169,58,70,0.25)',
+                color: '#A93A46',
                 fontFamily: 'system-ui, sans-serif',
               }}
             >

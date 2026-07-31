@@ -18,10 +18,10 @@ export default function CategoryCard({ category, index }) {
         border: '1px solid var(--border)',
       }}
     >
-      {/* Gold accent bar top */}
+      {/* Accent bar top */}
       <div
         className="absolute top-0 left-0 right-0 h-0.5 rounded-t-2xl"
-        style={{ background: 'linear-gradient(90deg, transparent, #C8A951, transparent)' }}
+        style={{ background: 'linear-gradient(90deg, transparent, #C4A484, transparent)' }}
       />
 
       <div className="flex items-center gap-4 p-4">
@@ -29,8 +29,8 @@ export default function CategoryCard({ category, index }) {
         <div
           className="w-14 h-14 rounded-xl flex items-center justify-center text-2xl flex-shrink-0"
           style={{
-            background: 'rgba(200,169,81,0.12)',
-            border: '1px solid rgba(200,169,81,0.28)',
+            background: 'rgba(169,58,70,0.12)',
+            border: '1px solid rgba(169,58,70,0.28)',
           }}
         >
           {category.emoji}

@@ -44,7 +44,7 @@ function IngredientLabel({ name, index, total, modelSize }) {
           x1="50%" y1="50%"
           x2={x > 0 ? '100%' : '0%'}
           y2={y > 0 ? '100%' : '0%'}
-          stroke="#C8A951"
+          stroke="#A93A46"
           strokeWidth="1"
           strokeDasharray="3 2"
         />
@@ -55,8 +55,8 @@ function IngredientLabel({ name, index, total, modelSize }) {
         className="whitespace-nowrap text-xs font-medium px-2.5 py-1 rounded-full"
         style={{
           background: 'rgba(10,6,2,0.72)',
-          border: '1px solid rgba(200,169,81,0.45)',
-          color: '#E8C96A',
+          border: '1px solid rgba(169,58,70,0.45)',
+          color: '#C4555F',
           fontFamily: 'system-ui, sans-serif',
           backdropFilter: 'blur(6px)',
           boxShadow: '0 2px 12px rgba(0,0,0,0.5)',
@@ -160,7 +160,7 @@ export default function CameraARViewer({ src, dishName, ingredients = [], onClos
       {/* ── Header ── */}
       <div className="absolute top-0 left-0 right-0 flex items-center justify-between px-4 h-14 z-30">
         <div className="flex items-center gap-2">
-          <Cuboid size={16} color="#C8A951" />
+          <Cuboid size={16} color="#A93A46" />
           <span
             className="text-white font-semibold text-sm truncate max-w-[200px]"
             style={{ fontFamily: 'var(--font-body)' }}
@@ -187,7 +187,7 @@ export default function CameraARViewer({ src, dishName, ingredients = [], onClos
           >
             <div
               className="w-12 h-12 rounded-full border-2 animate-spin"
-              style={{ borderColor: 'rgba(200,169,81,0.2)', borderTopColor: '#C8A951' }}
+              style={{ borderColor: 'rgba(169,58,70,0.2)', borderTopColor: '#A93A46' }}
             />
             <span className="text-white text-sm" style={{ fontFamily: 'var(--font-body)' }}>
               Starting camera…
@@ -206,7 +206,7 @@ export default function CameraARViewer({ src, dishName, ingredients = [], onClos
           <button
             onClick={onClose}
             className="px-6 py-3 rounded-2xl text-sm font-semibold"
-            style={{ background: 'rgba(200,169,81,0.2)', color: '#C8A951', border: '1px solid rgba(200,169,81,0.3)' }}
+            style={{ background: 'rgba(169,58,70,0.2)', color: '#A93A46', border: '1px solid rgba(169,58,70,0.3)' }}
           >
             Close
           </button>
@@ -242,7 +242,7 @@ export default function CameraARViewer({ src, dishName, ingredients = [], onClos
           <div
             className="absolute inset-0 rounded-full pointer-events-none"
             style={{
-              background: 'radial-gradient(ellipse, rgba(200,169,81,0.08) 0%, transparent 70%)',
+              background: 'radial-gradient(ellipse, rgba(169,58,70,0.08) 0%, transparent 70%)',
               transform: 'scale(1.1)',
             }}
           />
@@ -297,7 +297,7 @@ export default function CameraARViewer({ src, dishName, ingredients = [], onClos
           >
             <div
               className="w-10 h-10 rounded-full border-2 animate-spin"
-              style={{ borderColor: 'rgba(200,169,81,0.2)', borderTopColor: '#C8A951' }}
+              style={{ borderColor: 'rgba(169,58,70,0.2)', borderTopColor: '#A93A46' }}
             />
           </motion.div>
         )}
@@ -317,10 +317,10 @@ export default function CameraARViewer({ src, dishName, ingredients = [], onClos
             className="flex items-center gap-2 px-5 py-2.5 rounded-full font-semibold text-sm transition-all active:scale-95"
             style={{
               background: showIngredients
-                ? 'rgba(200,169,81,0.95)'
-                : 'rgba(10,6,2,0.65)',
-              color: showIngredients ? '#1A0F00' : '#C8A951',
-              border: `1px solid ${showIngredients ? 'transparent' : 'rgba(200,169,81,0.4)'}`,
+                ? 'rgba(169,58,70,0.95)'
+                : 'rgba(0,0,0,0.55)',
+              color: showIngredients ? '#FFFFFF' : '#A93A46',
+              border: `1px solid ${showIngredients ? 'transparent' : 'rgba(169,58,70,0.4)'}`,
               fontFamily: 'system-ui, sans-serif',
               backdropFilter: 'blur(10px)',
               pointerEvents: 'auto',
@@ -358,8 +358,8 @@ export default function CameraARViewer({ src, dishName, ingredients = [], onClos
                 width: 28,
                 height: 28,
                 transform: `rotate(${pos.rotate}deg)`,
-                borderTop: '2px solid rgba(200,169,81,0.6)',
-                borderLeft: '2px solid rgba(200,169,81,0.6)',
+                borderTop: '2px solid rgba(169,58,70,0.6)',
+                borderLeft: '2px solid rgba(169,58,70,0.6)',
                 borderRadius: '2px 0 0 0',
               }}
             />

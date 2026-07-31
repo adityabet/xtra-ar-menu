@@ -32,7 +32,7 @@ export default function DishCard({ dish, index }) {
         {/* AR badge */}
         <div
           className="absolute top-2 right-2 flex items-center gap-1 px-2 py-1 rounded-full text-[10px] font-bold tracking-wide"
-          style={{ background: 'rgba(200,169,81,0.92)', color: '#1A0F00' }}
+          style={{ background: 'rgba(169,58,70,0.92)', color: '#FFFFFF' }}
         >
           <Cuboid size={10} />
           AR
@@ -42,9 +42,9 @@ export default function DishCard({ dish, index }) {
         {dish.isChefRecommended && (
           <div
             className="absolute top-2 left-2 flex items-center gap-1 px-2 py-1 rounded-full text-[10px]"
-            style={{ background: 'rgba(244,239,230,0.88)', border: '1px solid rgba(200,169,81,0.4)' }}
+            style={{ background: 'rgba(244,239,230,0.88)', border: '1px solid rgba(196,164,132,0.6)' }}
           >
-            <Star size={9} color="#C8A951" fill="#C8A951" />
+            <Star size={9} color="#A93A46" fill="#A93A46" />
             <span style={{ color: '#3B2A1A' }}>Chef's Pick</span>
           </div>
         )}

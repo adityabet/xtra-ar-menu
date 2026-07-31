@@ -33,7 +33,7 @@ export default function Navbar({ title, showBack = false }) {
       <div className="flex flex-col items-center">
         {isHome ? (
           <>
-            <span className="shimmer-gold font-bold text-base tracking-widest">XTRA</span>
+            <span className="shimmer-gold font-bold text-base tracking-widest">MenuVista</span>
             <span className="text-[9px] tracking-[0.3em] uppercase -mt-0.5" style={{ color: 'var(--text-faint)', fontFamily: 'var(--font-body)' }}>AR Menu</span>
           </>
         ) : (

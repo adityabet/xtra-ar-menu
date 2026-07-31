@@ -141,7 +141,7 @@ export default function PalmARViewer({ src, dishName, onClose }) {
       {/* ── Header ── */}
       <div className="absolute top-0 left-0 right-0 flex items-center justify-between px-4 h-14 z-20">
         <div className="flex items-center gap-2">
-          <Cuboid size={16} color="#C8A951" />
+          <Cuboid size={16} color="#A93A46" />
           <span className="text-white font-semibold text-sm truncate max-w-[200px]"
             style={{ fontFamily: 'var(--font-body)' }}>{dishName}</span>
         </div>
@@ -159,7 +159,7 @@ export default function PalmARViewer({ src, dishName, onClose }) {
             className="absolute inset-0 z-30 flex flex-col items-center justify-center gap-4"
             style={{ background: '#000' }}>
             <div className="w-12 h-12 rounded-full border-2 animate-spin"
-              style={{ borderColor: 'rgba(200,169,81,0.2)', borderTopColor: '#C8A951' }} />
+              style={{ borderColor: 'rgba(169,58,70,0.2)', borderTopColor: '#A93A46' }} />
             <span className="text-white text-sm" style={{ fontFamily: 'var(--font-body)' }}>
               Starting camera…
             </span>
@@ -176,7 +176,7 @@ export default function PalmARViewer({ src, dishName, onClose }) {
           </p>
           <button onClick={onClose}
             className="px-6 py-3 rounded-2xl text-sm font-semibold"
-            style={{ background: 'rgba(200,169,81,0.2)', color: '#C8A951', border: '1px solid rgba(200,169,81,0.3)' }}>
+            style={{ background: 'rgba(169,58,70,0.2)', color: '#A93A46', border: '1px solid rgba(169,58,70,0.3)' }}>
             Close
           </button>
         </div>
@@ -197,32 +197,32 @@ export default function PalmARViewer({ src, dishName, onClose }) {
             >
               <svg width="90" height="110" viewBox="0 0 90 110" fill="none" xmlns="http://www.w3.org/2000/svg">
                 {/* Palm base */}
-                <path d="M18 58 C16 48 15 38 15 30 C15 24 19 20 24 20 C27 20 30 22 31 26 L31 44" stroke="#C8A951" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+                <path d="M18 58 C16 48 15 38 15 30 C15 24 19 20 24 20 C27 20 30 22 31 26 L31 44" stroke="#A93A46" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
                 {/* Index finger */}
-                <path d="M31 44 L31 18 C31 13 35 10 39 10 C43 10 46 13 46 18 L46 44" stroke="#C8A951" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+                <path d="M31 44 L31 18 C31 13 35 10 39 10 C43 10 46 13 46 18 L46 44" stroke="#A93A46" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
                 {/* Middle finger */}
-                <path d="M46 44 L46 14 C46 9 50 6 54 6 C58 6 61 9 61 14 L61 44" stroke="#C8A951" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+                <path d="M46 44 L46 14 C46 9 50 6 54 6 C58 6 61 9 61 14 L61 44" stroke="#A93A46" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
                 {/* Ring finger */}
-                <path d="M61 44 L61 18 C61 13 65 10 69 10 C73 10 76 13 76 18 L76 44" stroke="#C8A951" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+                <path d="M61 44 L61 18 C61 13 65 10 69 10 C73 10 76 13 76 18 L76 44" stroke="#A93A46" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
                 {/* Pinky */}
-                <path d="M76 44 L76 26 C76 21 79 18 82 18 C85 18 88 21 88 26 L88 52 C88 62 82 70 74 72" stroke="#C8A951" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
+                <path d="M76 44 L76 26 C76 21 79 18 82 18 C85 18 88 21 88 26 L88 52 C88 62 82 70 74 72" stroke="#A93A46" strokeWidth="2.5" strokeLinecap="round" fill="none"/>
                 {/* Palm body */}
-                <path d="M15 58 C14 68 16 76 22 82 L34 92 C38 96 44 98 50 98 C62 98 74 90 76 78 L76 72 C68 76 58 78 48 76 C34 74 20 66 15 58 Z" stroke="#C8A951" strokeWidth="2.5" fill="rgba(200,169,81,0.08)" strokeLinejoin="round"/>
+                <path d="M15 58 C14 68 16 76 22 82 L34 92 C38 96 44 98 50 98 C62 98 74 90 76 78 L76 72 C68 76 58 78 48 76 C34 74 20 66 15 58 Z" stroke="#A93A46" strokeWidth="2.5" fill="rgba(169,58,70,0.08)" strokeLinejoin="round"/>
                 {/* Wrist lines */}
-                <path d="M28 96 C34 102 42 106 50 106" stroke="#C8A951" strokeWidth="1.5" strokeLinecap="round" opacity="0.5"/>
-                <path d="M24 100 C30 106 40 110 50 110" stroke="#C8A951" strokeWidth="1" strokeLinecap="round" opacity="0.3"/>
+                <path d="M28 96 C34 102 42 106 50 106" stroke="#A93A46" strokeWidth="1.5" strokeLinecap="round" opacity="0.5"/>
+                <path d="M24 100 C30 106 40 110 50 110" stroke="#A93A46" strokeWidth="1" strokeLinecap="round" opacity="0.3"/>
                 {/* Palm center glow dot */}
-                <circle cx="46" cy="72" r="3" fill="#C8A951" opacity="0.6"/>
-                <circle cx="46" cy="72" r="6" fill="#C8A951" opacity="0.15"/>
+                <circle cx="46" cy="72" r="3" fill="#A93A46" opacity="0.6"/>
+                <circle cx="46" cy="72" r="6" fill="#A93A46" opacity="0.15"/>
               </svg>
             </motion.div>
 
             {/* Scanning ring */}
             <div className="relative w-40 h-40 -mt-4 pointer-events-none">
               <div className="absolute inset-0 rounded-full border-2 animate-ping"
-                style={{ borderColor: 'rgba(200,169,81,0.4)' }} />
+                style={{ borderColor: 'rgba(169,58,70,0.4)' }} />
               <div className="absolute inset-4 rounded-full border animate-ping"
-                style={{ borderColor: 'rgba(200,169,81,0.3)', animationDelay: '0.4s' }} />
+                style={{ borderColor: 'rgba(169,58,70,0.3)', animationDelay: '0.4s' }} />
             </div>
 
             <div className="flex flex-col items-center gap-1 -mt-6">
@@ -308,8 +308,8 @@ export default function PalmARViewer({ src, dishName, onClose }) {
               width: palmPos.size * 1.6,
               height: palmPos.size * 1.2,
               transform: 'translate(-50%, -50%)',
-              border: '1.5px solid rgba(200,169,81,0.35)',
-              boxShadow: '0 0 20px rgba(200,169,81,0.15)',
+              border: '1.5px solid rgba(169,58,70,0.35)',
+              boxShadow: '0 0 20px rgba(169,58,70,0.15)',
               borderRadius: '50%',
             }}
           />

@@ -7,18 +7,18 @@
   --font-text:    'Inter', system-ui, sans-serif;
 }
 
-/* ── Theme variables — warm terracotta nude ────────────────────────────── */
+/* ── Theme variables — red velvet & light brown ─────────────────────────── */
 :root {
-  --bg:         #EEE4D6;
-  --bg-2:       #E6D9C8;
+  --bg:         #F5EFE6;
+  --bg-2:       #EDE3D4;
   --bg-3:       #DCCDB8;
   --text:       #2A1A0A;
   --text-muted: #604530;
   --text-faint: #987055;
   --border:     rgba(90,50,20,0.10);
-  --card-bg:    #E8DACC;
-  --nav-bg:     rgba(238,228,214,0.97);
-  --gold:       #C8A951;
+  --card-bg:    #F0E7D8;
+  --nav-bg:     rgba(245,239,230,0.97);
+  --gold:       #C4A484;
 }
 
 @layer base {
@@ -34,13 +34,13 @@
   #root { min-height: 100svh; }
   ::-webkit-scrollbar { width: 3px; }
   ::-webkit-scrollbar-track { background: var(--bg-2); }
-  ::-webkit-scrollbar-thumb { background: rgba(200,169,81,0.5); border-radius: 2px; }
+  ::-webkit-scrollbar-thumb { background: rgba(196,164,132,0.5); border-radius: 2px; }
 }
 
 @layer utilities {
-  .text-gold   { color: #C8A951; }
-  .bg-gold     { background-color: #C8A951; }
-  .border-gold { border-color: #C8A951; }
+  .text-gold   { color: #A93A46; }
+  .bg-gold     { background-color: #A93A46; }
+  .border-gold { border-color: #A93A46; }
 
   /* Light glass — same as website */
   .glass {
@@ -54,16 +54,16 @@
     background: rgba(0,0,0,0.55);
     backdrop-filter: blur(20px);
     -webkit-backdrop-filter: blur(20px);
-    border: 1px solid rgba(200,169,81,0.2);
+    border: 1px solid rgba(169,58,70,0.2);
   }
 
-  .gold-gradient { background: linear-gradient(135deg, #C8A951 0%, #E8C96A 50%, #9A7A35 100%); }
+  .gold-gradient { background: linear-gradient(135deg, #A93A46 0%, #C4555F 50%, #8B2635 100%); }
   .card-shadow   { box-shadow: 0 4px 20px rgba(0,0,0,0.08), 0 0 0 1px rgba(0,0,0,0.05); }
   .safe-bottom   { padding-bottom: env(safe-area-inset-bottom, 16px); }
 
   .gold-line {
     height: 2px;
-    background: linear-gradient(90deg, transparent, #C8A951 50%, transparent);
+    background: linear-gradient(90deg, transparent, #C4A484 50%, transparent);
     opacity: 0.8;
   }
 }
@@ -85,10 +85,10 @@
   to { transform: rotate(360deg); }
 }
 
-/* Logo shimmer — Playfair Display, dark brown + gold */
+/* Logo shimmer — Playfair Display, deep red velvet */
 .shimmer-gold {
   font-family: var(--font-display) !important;
-  background: linear-gradient(90deg, #3B2A1A 0%, #C8A951 35%, #3B2A1A 55%, #C8A951 100%);
+  background: linear-gradient(90deg, #5C1820 0%, #A93A46 35%, #5C1820 55%, #A93A46 100%);
   background-size: 200% auto;
   -webkit-background-clip: text;
   -webkit-text-fill-color: transparent;
